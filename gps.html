@@ -245,10 +245,10 @@
           const acc = pos.coords.accuracy;
 
           let text = "";
-          text += "Latitude:  " + lat + "\\n";
-          text += "Longitude: " + lon + "\\n";
-          text += "Accuracy:  ±" + Math.round(acc) + " metres\\n\\n";
-          text += "Google Maps link:\\n";
+          text += "Latitude:  " + lat + "\n";
+          text += "Longitude: " + lon + "\n";
+          text += "Accuracy:  ±" + Math.round(acc) + " metres\n\n";
+          text += "Google Maps link:\n";
           text += "https://www.google.com/maps?q=" + lat + "," + lon;
 
           out.textContent = text;
