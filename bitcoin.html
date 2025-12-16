@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bullseye Investigations – Bitcoin Address Tracker</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 22px; max-width: 980px; line-height: 1.4; }
+    h1 { margin: 0 0 8px 0; }
+    h2 { margin-top: 22px; }
+    .muted { color: #666; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; word-break: break-all; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    input, button, select { padding: 10px; font-size: 14px; }
+    input { width: min(720px, 100%); }
+    button { cursor: pointer; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 12px 14px; margin: 12px 0; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid #ddd; }
+    .ok { border-color: #7bd88f; }
+    .warn { border-color: #f2c14e; }
+    .err { color: #b00020; }
+  </style>
+</head>
+<body>
+  <h1>Bullseye Investigations Pty Ltd</h1>
+
+  <p>Bitcoin Address Tracker – Demonstration Only</p>
+
+  <h2>Can We Trace a Payment Path?</h2>
+  <p>
+    This tool shows publicly available Bitcoin transaction history for an address. It uses a public blockchain API and
+    displays the results in your browser. It is designed for education and basic tracing workflows.
+  </p>
+
+  <div class="row">
+    <input id="address" class="mono" placeholder="Paste a Bitcoin address (bc1..., 1..., 3...)" />
+    <select id="limit">
+      <option value="5">Last 5</option>
+      <option value="10" selected>Last 10</option>
+      <option value="25">Last 25</option>
+    </select>
+    <button id="go">Get Transactions</button>
+  </div>
+
+  <p id="status" class="muted"></p>
+  <div id="output"></div>
+
+  <h2>About This Tool</h2>
+  <p>
+    Bullseye Investigations Pty Ltd is a licensed private investigation firm based in Western Australia.
+    This page is a demonstration only. It does not identify the real-world owner of a wallet address.
+    If funds move to an exchange, identification typically requires lawful process.
+  </p>
+
+  <h2>Important Legal Notice</h2>
+  <p>
+    Misusing financial tracking technology for harassment, unlawful surveillance, or deception may result in criminal
+    charges, restraining orders, civil action, and prison. We assist with lawful investigations and evidence preparation.
+  </p>
+
+  <h2>Need Help With an Investigation?</h2>
+  <p>
+    If you need assistance with an investigation, you can speak to Bullseye Investigations Pty Ltd.<br><br>
+    Phone: 0468 848 260<br>
+    Location: Level 1 / 2 Victoria Street, Midland WA 6056 (by appointment)<br>
+    Website: bullseyeinvestigations.com.au
+  </p>
+
+  <p class="muted">© Bullseye Investigations Pty Ltd. This page is a technical demonstration only and does not provide legal advice.</p>
+
+  <script>
+    const API = "https://blockstream.info/api";
+    const $ = (id) => document.getElementById(id);
+    const statusEl = $("status");
+    const outEl = $("output");
+
+    function isLikelyAddress(s) {
+      return /^(bc1|1|3)[a-zA-HJ-NP-Z0-9]{20,}$/i.test(s) && s.length >= 26 && s.length <= 80;
+    }
+
+    function satsToBtc(sats) {
+      return (sats / 100000000).toFixed(8);
+    }
+
+    function fmtTime(unix) {
+      if (!unix) return "N/A";
+      const d = new Date(unix * 1000);
+      return d.toISOString().replace("T", " ").replace(".000Z", " UTC");
+    }
+
+    async function fetchJson(url) {
+      const r = await fetch(url);
+      if (!r.ok) {
+        const t = await r.text();
+        throw new Error(`HTTP ${r.status}: ${t.slice(0, 200)}`);
+      }
+      return r.json();
+    }
+
+    async function fetchText(url) {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.text();
+    }
+
+    async function getTipHeight() {
+      const t = await fetchText(`${API}/blocks/tip/height`);
+      return parseInt(t, 10);
+    }
+
+    function calcAddressInTx(address, tx) {
+      let received = 0;
+      let spent = 0;
+
+      // outputs to address = received
+      for (const vout of (tx.vout || [])) {
+        if (vout.scriptpubkey_address === address) received += (vout.value || 0);
+      }
+
+      // inputs from address (prevout) = spent
+      for (const vin of (tx.vin || [])) {
+        const prev = vin.prevout || {};
+        if (prev.scriptpubkey_address === address) spent += (prev.value || 0);
+      }
+
+      return { received, spent, net: received - spent };
+    }
+
+    function renderTx(address, tx, tipHeight) {
+      const st = tx.status || {};
+      const confirmed = !!st.confirmed;
+      const confs = confirmed && st.block_height ? (tipHeight - st.block_height + 1) : 0;
+
+      const badgeClass = confirmed ? "pill ok" : "pill warn";
+      const badgeText = confirmed ? `confirmed • ${confs} conf` : "unconfirmed";
+
+      const a = calcAddressInTx(address, tx);
+
+      const topOutputs = (tx.vout || []).slice(0, 6).map(vout => {
+        const addr = vout.scriptpubkey_address || "(non-standard)";
+        const mark = addr === address ? " ← target" : "";
+        return `<div class="mono">${satsToBtc(vout.value || 0)} BTC → ${addr}${mark}</div>`;
+      }).join("");
+
+      return `
+        <div class="card">
+          <div class="row">
+            <div class="${badgeClass}">${badgeText}</div>
+            <div class="muted">time: ${fmtTime(st.block_time)}</div>
+          </div>
+          <div class="mono"><b>txid:</b> ${tx.txid}</div>
+
+          <div style="margin-top:10px;">
+            <div><b>Received to address:</b> ${satsToBtc(a.received)} BTC</div>
+            <div><b>Spent from address:</b> ${satsToBtc(a.spent)} BTC</div>
+            <div><b>Net change:</b> ${a.net >= 0 ? "+" : ""}${satsToBtc(a.net)} BTC</div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <div class="muted">Top outputs</div>
+            ${topOutputs || "<div class='muted'>No outputs shown.</div>"}
+          </div>
+
+          <div style="margin-top:10px;">
+            <a href="https://blockstream.info/tx/${tx.txid}" target="_blank" rel="noopener">Open in explorer</a>
+          </div>
+        </div>
+      `;
+    }
+
+    async function run() {
+      outEl.innerHTML = "";
+      statusEl.textContent = "";
+
+      const address = $("address").value.trim();
+      const limit = parseInt($("limit").value, 10);
+
+      if (!isLikelyAddress(address)) {
+        statusEl.innerHTML = `<span class="err">Error:</span> Please paste a valid Bitcoin address (bc1..., 1..., or 3...).`;
+        return;
+      }
+
+      statusEl.textContent = "Loading transactions…";
+
+      const tip = await getTipHeight();
+      const txs = await fetchJson(`${API}/address/${address}/txs`);
+      const slice = txs.slice(0, limit);
+
+      statusEl.innerHTML = `Found ${slice.length} recent transactions for <span class="mono">${address}</span>.`;
+
+      outEl.innerHTML =
+        `<div class="card">
+          <div class="muted">Address</div>
+          <div class="mono">${address}</div>
+          <div style="margin-top:10px;">
+            <a href="https://blockstream.info/address/${address}" target="_blank" rel="noopener">Open address in explorer</a>
+          </div>
+        </div>` +
+        slice.map(tx => renderTx(address, tx, tip)).join("");
+    }
+
+    $("go").addEventListener("click", () => run().catch(e => {
+      statusEl.innerHTML = `<span class="err">Error:</span> ${String(e.message || e)}`;
+    }));
+  </script>
+</body>
+</html>
