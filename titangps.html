@@ -16,7 +16,6 @@
       --soft:#eef2f6;
       --border:#d9e1ea;
     }
-
     *{box-sizing:border-box}
     body{
       margin:0; padding:0;
@@ -24,7 +23,6 @@
       background:var(--bg);
       color:var(--text);
     }
-
     header{
       background:var(--primary);
       color:#fff;
@@ -42,13 +40,11 @@
       font-size:13px;
       opacity:.9;
     }
-
     main{
       max-width:980px;
       margin:18px auto 44px;
       padding:0 14px;
     }
-
     .card{
       background:var(--card);
       border-radius:12px;
@@ -57,19 +53,16 @@
       margin-bottom:16px;
       box-shadow:0 2px 8px rgba(0,0,0,.06);
     }
-
     .card h2{
       margin:0 0 8px;
       font-size:17px;
       color:var(--primary);
     }
     .card p{margin:8px 0; font-size:14px; color:var(--muted); line-height:1.4}
-
     .grid{
       display:flex; gap:12px; flex-wrap:wrap;
     }
     .col{flex:1 1 280px;}
-
     label{display:block; font-size:13px; color:var(--muted); margin:10px 0 6px;}
     input[type="text"], input[type="email"], input[type="password"]{
       width:100%;
@@ -79,7 +72,6 @@
       background:#fff;
       font-size:14px;
     }
-
     .checkboxRow{
       display:flex; gap:10px; align-items:flex-start;
       padding:10px 10px;
@@ -89,7 +81,6 @@
       margin-top:12px;
     }
     .checkboxRow input{margin-top:3px}
-
     .btn{
       font-size:15px;
       padding:11px 16px;
@@ -101,7 +92,6 @@
       margin-top:12px;
     }
     .btn:disabled{opacity:.6; cursor:default}
-
     .warn{
       border-left:4px solid var(--accent);
       padding-left:10px;
@@ -110,7 +100,6 @@
       padding:10px 10px;
       color:#7a1c1c;
     }
-
     #output{
       margin-top:12px;
       font-size:13px;
@@ -121,7 +110,6 @@
       border:1px solid var(--border);
       overflow-x:auto;
     }
-
     #mapFrame{
       width:100%;
       height:360px;
@@ -130,7 +118,6 @@
       margin-top:12px;
       background:var(--soft);
     }
-
     .tiny{font-size:12px; color:#6b7280}
     footer{
       text-align:center;
@@ -138,7 +125,6 @@
       color:#6b7280;
       padding:12px 14px 18px;
     }
-
     @media (max-width: 600px){
       header h1{font-size:17px}
       #mapFrame{height:280px}
@@ -204,7 +190,7 @@
 
     <button class="btn" id="locBtn">Capture & Submit Location</button>
 
-    <div id="output">Tick consent, enter the submission code, then click the button and approve the location prompt.</div>
+    <div id="output">Tick consent, enter TS-REP-2026, then click the button and approve the location prompt.</div>
 
     <iframe
       id="mapFrame"
@@ -238,9 +224,6 @@
   // CONFIG – SET THESE
   // =============================
   const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwg4SJom3_WMuOCfPeHYfa3rgZrNeHdIJLlS0rYwRWekf6xnNQlJBEB54sFIysL0-9L/exec";
-
-  // Change this to whatever you want, then give it to your reps
-  // Example: "TS-REP-2026"
   const SUBMIT_TOKEN = "TS-REP-2026";
 
   const btn = document.getElementById('locBtn');
@@ -277,13 +260,15 @@
     return "https://www.google.com/maps?q=" + q + "&z=17&output=embed";
   }
 
+  // IMPORTANT: This uses text/plain + no-cors to avoid CORS/preflight issues with Apps Script.
   async function postToSheet(payload){
-    const r = await fetch(GOOGLE_SCRIPT_URL, {
+    await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(payload)
     });
-    return await r.text();
+    return "Sent. Check Google Sheets for the new row.";
   }
 
   btn.addEventListener('click', async () => {
@@ -297,10 +282,6 @@
       }
       if (!token || token !== SUBMIT_TOKEN) {
         setOut("Submission code is required, or incorrect.");
-        return;
-      }
-      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR")) {
-        setOut("Configuration error: Google Script URL is not set.");
         return;
       }
 
@@ -320,7 +301,6 @@
 
       const mapsLink = "https://www.google.com/maps?q=" + encodeURIComponent(lat + "," + lng);
 
-      // Show map preview immediately
       mapFrame.src = googleMapsEmbedUrl(lat, lng);
 
       const payload = {
@@ -345,12 +325,13 @@
 
       setOut({
         success: true,
-        message: "Submitted. Check the Google Sheet for the new row.",
-        google_response: resp,
+        message: resp,
         payload
       });
 
     } catch (err) {
+      // Common GPS error codes:
+      // 1 = permission denied, 2 = position unavailable, 3 = timeout
       setOut({ success: false, error: err.message || String(err) });
     } finally {
       btn.disabled = false;
