@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Titan Securities – Representative Location Check</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root{
+      --primary:#0b2a3c;
+      --accent:#b71c1c;
+      --bg:#f4f6f8;
+      --card:#ffffff;
+      --text:#1f2328;
+      --muted:#4b5563;
+      --soft:#eef2f6;
+      --border:#d9e1ea;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0; padding:0;
+      font-family: Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      background:var(--primary);
+      color:#fff;
+      padding:18px 18px;
+      text-align:center;
+    }
+    header h1{
+      margin:0;
+      font-size:20px;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+    header p{
+      margin:6px 0 0;
+      font-size:13px;
+      opacity:.9;
+    }
+
+    main{
+      max-width:980px;
+      margin:18px auto 44px;
+      padding:0 14px;
+    }
+
+    .card{
+      background:var(--card);
+      border-radius:12px;
+      border:1px solid var(--border);
+      padding:18px 16px 20px;
+      margin-bottom:16px;
+      box-shadow:0 2px 8px rgba(0,0,0,.06);
+    }
+
+    .card h2{
+      margin:0 0 8px;
+      font-size:17px;
+      color:var(--primary);
+    }
+    .card p{margin:8px 0; font-size:14px; color:var(--muted); line-height:1.4}
+
+    .grid{
+      display:flex; gap:12px; flex-wrap:wrap;
+    }
+    .col{flex:1 1 280px;}
+
+    label{display:block; font-size:13px; color:var(--muted); margin:10px 0 6px;}
+    input[type="text"], input[type="email"], input[type="password"]{
+      width:100%;
+      padding:10px 10px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-size:14px;
+    }
+
+    .checkboxRow{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:10px 10px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      background:var(--soft);
+      margin-top:12px;
+    }
+    .checkboxRow input{margin-top:3px}
+
+    .btn{
+      font-size:15px;
+      padding:11px 16px;
+      background:var(--primary);
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      margin-top:12px;
+    }
+    .btn:disabled{opacity:.6; cursor:default}
+
+    .warn{
+      border-left:4px solid var(--accent);
+      padding-left:10px;
+      background:#fff7f7;
+      border-radius:8px;
+      padding:10px 10px;
+      color:#7a1c1c;
+    }
+
+    #output{
+      margin-top:12px;
+      font-size:13px;
+      white-space:pre-wrap;
+      background:var(--soft);
+      padding:12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      overflow-x:auto;
+    }
+
+    #mapFrame{
+      width:100%;
+      height:360px;
+      border:none;
+      border-radius:10px;
+      margin-top:12px;
+      background:var(--soft);
+    }
+
+    .tiny{font-size:12px; color:#6b7280}
+    footer{
+      text-align:center;
+      font-size:12px;
+      color:#6b7280;
+      padding:12px 14px 18px;
+    }
+
+    @media (max-width: 600px){
+      header h1{font-size:17px}
+      #mapFrame{height:280px}
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>Titan Securities Pty Ltd</h1>
+  <p>Authorised Representative Location Check – Compliance Record</p>
+</header>
+
+<main>
+
+  <section class="card">
+    <h2>Purpose</h2>
+    <p>
+      This page records an Authorised Representative’s location at the time of submission for supervision evidence.
+      Submission is voluntary and requires your explicit consent.
+    </p>
+    <p class="tiny">
+      What is collected: name (optional), email (optional), CAR name (optional), latitude, longitude, accuracy, timestamp,
+      public IP address, device/browser information, and the page URL.
+    </p>
+    <div class="warn">
+      Do not proceed unless you consent to Titan Securities collecting this information for supervision and compliance record-keeping.
+      If you do not consent, close this page.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Representative Details</h2>
+
+    <div class="grid">
+      <div class="col">
+        <label for="repName">Representative name (optional)</label>
+        <input id="repName" type="text" placeholder="e.g., George Smith">
+      </div>
+      <div class="col">
+        <label for="repEmail">Email (optional)</label>
+        <input id="repEmail" type="email" placeholder="e.g., george@example.com">
+      </div>
+      <div class="col">
+        <label for="carName">Corporate Authorised Representative (optional)</label>
+        <input id="carName" type="text" placeholder="e.g., ABC Pty Ltd">
+      </div>
+    </div>
+
+    <label for="token">Submission code (required)</label>
+    <input id="token" type="password" placeholder="Enter the submission code provided by Titan">
+
+    <div class="checkboxRow">
+      <input id="consentChk" type="checkbox">
+      <div>
+        <div style="font-size:13px; color:var(--text); font-weight:bold;">Consent</div>
+        <div class="tiny">
+          I consent to Titan Securities collecting my current location and public IP for supervision and compliance record-keeping.
+          I understand I can refuse by not submitting.
+        </div>
+      </div>
+    </div>
+
+    <button class="btn" id="locBtn">Capture & Submit Location</button>
+
+    <div id="output">Tick consent, enter the submission code, then click the button and approve the location prompt.</div>
+
+    <iframe
+      id="mapFrame"
+      src=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      title="Google Map">
+    </iframe>
+  </section>
+
+  <section class="card">
+    <h2>Notes</h2>
+    <p>
+      This page is intended for periodic supervision checks and record-keeping. It does not run in the background.
+      A submission only occurs when you click the button.
+    </p>
+    <p class="tiny">
+      If location is blocked, enable it for this site in your browser settings and try again.
+      For mobile, ensure Location Services is enabled.
+    </p>
+  </section>
+
+</main>
+
+<footer>
+  &copy; Titan Securities Pty Ltd. This page is for supervision record-keeping only. It does not provide financial product advice.
+</footer>
+
+<script>
+  // =============================
+  // CONFIG – SET THESE
+  // =============================
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwg4SJom3_WMuOCfPeHYfa3rgZrNeHdIJLlS0rYwRWekf6xnNQlJBEB54sFIysL0-9L/exec";
+
+  // Change this to whatever you want, then give it to your reps
+  // Example: "TS-REP-2026"
+  const SUBMIT_TOKEN = "TS-REP-2026";
+
+  const btn = document.getElementById('locBtn');
+  const out = document.getElementById('output');
+  const mapFrame = document.getElementById('mapFrame');
+
+  function setOut(msg){
+    out.textContent = (typeof msg === "string") ? msg : JSON.stringify(msg, null, 2);
+  }
+
+  async function getPublicIP(){
+    const r = await fetch("https://api.ipify.org?format=json", { cache: "no-store" });
+    if (!r.ok) throw new Error("Unable to fetch public IP address.");
+    const data = await r.json();
+    return data.ip;
+  }
+
+  function getLocation(){
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation is not supported by this browser."));
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      });
+    });
+  }
+
+  function googleMapsEmbedUrl(lat, lng){
+    const q = encodeURIComponent(lat + "," + lng);
+    return "https://www.google.com/maps?q=" + q + "&z=17&output=embed";
+  }
+
+  async function postToSheet(payload){
+    const r = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    return await r.text();
+  }
+
+  btn.addEventListener('click', async () => {
+    try {
+      const consent = document.getElementById("consentChk").checked;
+      const token = document.getElementById("token").value;
+
+      if (!consent) {
+        setOut("Consent is required. Tick the consent box to proceed.");
+        return;
+      }
+      if (!token || token !== SUBMIT_TOKEN) {
+        setOut("Submission code is required, or incorrect.");
+        return;
+      }
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR")) {
+        setOut("Configuration error: Google Script URL is not set.");
+        return;
+      }
+
+      btn.disabled = true;
+      setOut("Requesting location permission…");
+
+      const repName  = document.getElementById("repName").value.trim();
+      const repEmail = document.getElementById("repEmail").value.trim();
+      const carName  = document.getElementById("carName").value.trim();
+
+      const [pos, ip] = await Promise.all([getLocation(), getPublicIP()]);
+
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const acc = pos.coords.accuracy;
+      const ts  = new Date(pos.timestamp).toISOString();
+
+      const mapsLink = "https://www.google.com/maps?q=" + encodeURIComponent(lat + "," + lng);
+
+      // Show map preview immediately
+      mapFrame.src = googleMapsEmbedUrl(lat, lng);
+
+      const payload = {
+        consent: true,
+        repName,
+        repEmail,
+        carName,
+        lat,
+        lng,
+        accuracy: Math.round(acc),
+        timestamp: ts,
+        publicIP: ip,
+        mapsLink,
+        pageUrl: location.href,
+        userAgent: navigator.userAgent
+      };
+
+      setOut({ step: "Captured", payload });
+
+      setOut("Submitting to Titan supervision log…");
+      const resp = await postToSheet(payload);
+
+      setOut({
+        success: true,
+        message: "Submitted. Check the Google Sheet for the new row.",
+        google_response: resp,
+        payload
+      });
+
+    } catch (err) {
+      setOut({ success: false, error: err.message || String(err) });
+    } finally {
+      btn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
