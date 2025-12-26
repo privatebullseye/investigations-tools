@@ -17,118 +17,28 @@
       --border:#d9e1ea;
     }
     *{box-sizing:border-box}
-    body{
-      margin:0; padding:0;
-      font-family: Arial, sans-serif;
-      background:var(--bg);
-      color:var(--text);
-    }
-    header{
-      background:var(--primary);
-      color:#fff;
-      padding:18px 18px;
-      text-align:center;
-    }
-    header h1{
-      margin:0;
-      font-size:20px;
-      letter-spacing:.05em;
-      text-transform:uppercase;
-    }
-    header p{
-      margin:6px 0 0;
-      font-size:13px;
-      opacity:.9;
-    }
-    main{
-      max-width:980px;
-      margin:18px auto 44px;
-      padding:0 14px;
-    }
-    .card{
-      background:var(--card);
-      border-radius:12px;
-      border:1px solid var(--border);
-      padding:18px 16px 20px;
-      margin-bottom:16px;
-      box-shadow:0 2px 8px rgba(0,0,0,.06);
-    }
-    .card h2{
-      margin:0 0 8px;
-      font-size:17px;
-      color:var(--primary);
-    }
-    .card p{margin:8px 0; font-size:14px; color:var(--muted); line-height:1.4}
-    .grid{
-      display:flex; gap:12px; flex-wrap:wrap;
-    }
+    body{margin:0;padding:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text);}
+    header{background:var(--primary);color:#fff;padding:18px;text-align:center;}
+    header h1{margin:0;font-size:20px;letter-spacing:.05em;text-transform:uppercase;}
+    header p{margin:6px 0 0;font-size:13px;opacity:.9;}
+    main{max-width:980px;margin:18px auto 44px;padding:0 14px;}
+    .card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:18px 16px 20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+    .card h2{margin:0 0 8px;font-size:17px;color:var(--primary);}
+    .card p{margin:8px 0;font-size:14px;color:var(--muted);line-height:1.4;}
+    .grid{display:flex;gap:12px;flex-wrap:wrap;}
     .col{flex:1 1 280px;}
-    label{display:block; font-size:13px; color:var(--muted); margin:10px 0 6px;}
-    input[type="text"], input[type="email"], input[type="password"]{
-      width:100%;
-      padding:10px 10px;
-      border-radius:8px;
-      border:1px solid var(--border);
-      background:#fff;
-      font-size:14px;
-    }
-    .checkboxRow{
-      display:flex; gap:10px; align-items:flex-start;
-      padding:10px 10px;
-      border:1px solid var(--border);
-      border-radius:10px;
-      background:var(--soft);
-      margin-top:12px;
-    }
+    label{display:block;font-size:13px;color:var(--muted);margin:10px 0 6px;}
+    input[type="text"],input[type="email"],input[type="password"]{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:14px;}
+    .checkboxRow{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--soft);margin-top:12px;}
     .checkboxRow input{margin-top:3px}
-    .btn{
-      font-size:15px;
-      padding:11px 16px;
-      background:var(--primary);
-      color:#fff;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
-      margin-top:12px;
-    }
-    .btn:disabled{opacity:.6; cursor:default}
-    .warn{
-      border-left:4px solid var(--accent);
-      padding-left:10px;
-      background:#fff7f7;
-      border-radius:8px;
-      padding:10px 10px;
-      color:#7a1c1c;
-    }
-    #output{
-      margin-top:12px;
-      font-size:13px;
-      white-space:pre-wrap;
-      background:var(--soft);
-      padding:12px;
-      border-radius:10px;
-      border:1px solid var(--border);
-      overflow-x:auto;
-    }
-    #mapFrame{
-      width:100%;
-      height:360px;
-      border:none;
-      border-radius:10px;
-      margin-top:12px;
-      background:var(--soft);
-    }
-    .tiny{font-size:12px; color:#6b7280}
-    footer{
-      text-align:center;
-      font-size:12px;
-      color:#6b7280;
-      padding:12px 14px 18px;
-    }
-    @media (max-width: 600px){
-      header h1{font-size:17px}
-      #mapFrame{height:280px}
-    }
+    .btn{font-size:15px;padding:11px 16px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:12px;}
+    .btn:disabled{opacity:.6;cursor:default}
+    .warn{border-left:4px solid var(--accent);padding-left:10px;background:#fff7f7;border-radius:8px;padding:10px;color:#7a1c1c;}
+    #output{margin-top:12px;font-size:13px;white-space:pre-wrap;background:var(--soft);padding:12px;border-radius:10px;border:1px solid var(--border);overflow-x:auto;}
+    #mapFrame{width:100%;height:360px;border:none;border-radius:10px;margin-top:12px;background:var(--soft);}
+    .tiny{font-size:12px;color:#6b7280}
+    footer{text-align:center;font-size:12px;color:#6b7280;padding:12px 14px 18px;}
+    @media (max-width:600px){header h1{font-size:17px}#mapFrame{height:280px}}
   </style>
 </head>
 
@@ -148,7 +58,7 @@
     </p>
     <p class="tiny">
       What is collected: name (optional), email (optional), CAR name (optional), latitude, longitude, accuracy, timestamp,
-      public IP address, device/browser information, and the page URL.
+      public IP address (where available), device/browser information, and the page URL.
     </p>
     <div class="warn">
       Do not proceed unless you consent to Titan Securities collecting this information for supervision and compliance record-keeping.
@@ -182,7 +92,7 @@
       <div>
         <div style="font-size:13px; color:var(--text); font-weight:bold;">Consent</div>
         <div class="tiny">
-          I consent to Titan Securities collecting my current location and public IP for supervision and compliance record-keeping.
+          I consent to Titan Securities collecting my current location and public IP (where available) for supervision and compliance record-keeping.
           I understand I can refuse by not submitting.
         </div>
       </div>
@@ -209,7 +119,6 @@
     </p>
     <p class="tiny">
       If location is blocked, enable it for this site in your browser settings and try again.
-      For mobile, ensure Location Services is enabled.
     </p>
   </section>
 
@@ -220,9 +129,6 @@
 </footer>
 
 <script>
-  // =============================
-  // CONFIG – SET THESE
-  // =============================
   const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwg4SJom3_WMuOCfPeHYfa3rgZrNeHdIJLlS0rYwRWekf6xnNQlJBEB54sFIysL0-9L/exec";
   const SUBMIT_TOKEN = "TS-REP-2026";
 
@@ -234,25 +140,27 @@
     out.textContent = (typeof msg === "string") ? msg : JSON.stringify(msg, null, 2);
   }
 
-  async function getPublicIP(){
-    const r = await fetch("https://api.ipify.org?format=json", { cache: "no-store" });
-    if (!r.ok) throw new Error("Unable to fetch public IP address.");
-    const data = await r.json();
-    return data.ip;
-  }
-
   function getLocation(){
     return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject(new Error("Geolocation is not supported by this browser."));
-        return;
-      }
+      if (!navigator.geolocation) return reject(new Error("Geolocation is not supported by this browser."));
       navigator.geolocation.getCurrentPosition(resolve, reject, {
         enableHighAccuracy: true,
-        timeout: 15000,
+        timeout: 20000,
         maximumAge: 0
       });
     });
+  }
+
+  async function getPublicIP(){
+    // If this is blocked by adblockers/networks, we return "Unavailable" instead of failing the whole flow.
+    try {
+      const r = await fetch("https://api.ipify.org?format=json", { cache: "no-store" });
+      if (!r.ok) return "Unavailable";
+      const data = await r.json();
+      return data.ip || "Unavailable";
+    } catch (_) {
+      return "Unavailable";
+    }
   }
 
   function googleMapsEmbedUrl(lat, lng){
@@ -260,8 +168,8 @@
     return "https://www.google.com/maps?q=" + q + "&z=17&output=embed";
   }
 
-  // IMPORTANT: This uses text/plain + no-cors to avoid CORS/preflight issues with Apps Script.
   async function postToSheet(payload){
+    // Avoid CORS/preflight issues with Apps Script:
     await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       mode: "no-cors",
@@ -276,38 +184,42 @@
       const consent = document.getElementById("consentChk").checked;
       const token = document.getElementById("token").value;
 
-      if (!consent) {
-        setOut("Consent is required. Tick the consent box to proceed.");
-        return;
-      }
-      if (!token || token !== SUBMIT_TOKEN) {
-        setOut("Submission code is required, or incorrect.");
-        return;
-      }
+      if (!consent) return setOut("Consent is required. Tick the consent box to proceed.");
+      if (!token || token !== SUBMIT_TOKEN) return setOut("Submission code is required, or incorrect.");
 
       btn.disabled = true;
       setOut("Requesting location permission…");
 
-      const repName  = document.getElementById("repName").value.trim();
-      const repEmail = document.getElementById("repEmail").value.trim();
-      const carName  = document.getElementById("carName").value.trim();
-
-      const [pos, ip] = await Promise.all([getLocation(), getPublicIP()]);
+      // 1) GPS first (so map displays even if IP lookup is blocked)
+      const pos = await getLocation();
 
       const lat = pos.coords.latitude;
       const lng = pos.coords.longitude;
       const acc = pos.coords.accuracy;
       const ts  = new Date(pos.timestamp).toISOString();
-
       const mapsLink = "https://www.google.com/maps?q=" + encodeURIComponent(lat + "," + lng);
 
       mapFrame.src = googleMapsEmbedUrl(lat, lng);
 
+      setOut(
+        "Location captured.\n" +
+        "Fetching IP (if available)…\n\n" +
+        "Latitude:  " + lat + "\n" +
+        "Longitude: " + lng + "\n" +
+        "Accuracy:  ±" + Math.round(acc) + " m\n" +
+        "Client Timestamp: " + ts + "\n" +
+        "Maps: " + mapsLink
+      );
+
+      // 2) IP second (optional)
+      const ip = await getPublicIP();
+
+      // 3) Submit
       const payload = {
         consent: true,
-        repName,
-        repEmail,
-        carName,
+        repName: document.getElementById("repName").value.trim(),
+        repEmail: document.getElementById("repEmail").value.trim(),
+        carName: document.getElementById("carName").value.trim(),
         lat,
         lng,
         accuracy: Math.round(acc),
@@ -318,21 +230,15 @@
         userAgent: navigator.userAgent
       };
 
-      setOut({ step: "Captured", payload });
-
-      setOut("Submitting to Titan supervision log…");
+      setOut({ step: "Submitting", payload });
       const resp = await postToSheet(payload);
 
-      setOut({
-        success: true,
-        message: resp,
-        payload
-      });
+      setOut({ success: true, message: resp, payload });
 
     } catch (err) {
-      // Common GPS error codes:
-      // 1 = permission denied, 2 = position unavailable, 3 = timeout
-      setOut({ success: false, error: err.message || String(err) });
+      // More helpful messages for common location issues
+      const msg = (err && err.message) ? err.message : String(err);
+      setOut({ success: false, error: msg });
     } finally {
       btn.disabled = false;
     }
