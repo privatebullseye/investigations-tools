@@ -14,36 +14,49 @@
     nav {
         min-height: 100vh;
         display: flex;
-        align-items: center;          /* vertical centering */
-        justify-content: center;      /* horizontal centering */
+        align-items: center;
+        justify-content: center;
         padding: 20px;
     }
 
     .menu-container {
         display: flex;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 28px;
         flex-wrap: wrap;
         max-width: 1100px;
     }
 
     .brand {
-        font-size: 20px;
+        width: 100%;
+        text-align: center;
+        font-size: 22px;
         font-weight: bold;
         color: #ffffff;
-        text-decoration: none;
-        margin-right: 20px;
-        white-space: nowrap;
+        margin-bottom: 30px;
+        letter-spacing: 0.5px;
     }
 
     .menu-item {
+        background: #0f3a5a;
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 14px;
+        padding: 18px 20px;
+        max-width: 300px;
         display: flex;
         flex-direction: column;
-        max-width: 280px;
+        justify-content: space-between;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .menu-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.35);
     }
 
     .menu-link {
-        font-size: 15px;
+        font-size: 16px;
         color: #ffffff;
         text-decoration: none;
         font-weight: bold;
@@ -54,17 +67,21 @@
     }
 
     .menu-desc {
-        font-size: 12px;
+        font-size: 13px;
         color: #d6e3ee;
-        margin-top: 4px;
-        line-height: 1.35;
+        margin-top: 8px;
+        line-height: 1.45;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
         .menu-container {
             flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
+            align-items: center;
+        }
+
+        .menu-item {
+            width: 100%;
+            max-width: 360px;
         }
     }
 </style>
@@ -75,16 +92,16 @@
 <nav>
     <div class="menu-container">
 
-        <span class="brand">Titan Securities Pty Ltd</span>
+        <div class="brand">Titan Securities Pty Ltd</div>
 
         <div class="menu-item">
             <a class="menu-link"
                href="https://privatebullseye.github.io/investigations-tools/titanadvert.html">
                Advertising & Website Submission
             </a>
-            <span class="menu-desc">
+            <div class="menu-desc">
                 Submit proposed advertising or website changes for compliance review prior to publication.
-            </span>
+            </div>
         </div>
 
         <div class="menu-item">
@@ -92,11 +109,10 @@
                href="https://privatebullseye.github.io/investigations-tools/titangps.html">
                GPS Supervision Evidence
             </a>
-            <span class="menu-desc">
-                Optional location record for supervision purposes. Applies only to Authorised
-                Representatives and Corporate Authorised Representatives onboarded under Titan
-                from 26 December 2025, with explicit consent.
-            </span>
+            <div class="menu-desc">
+                Annual office location confirmation. Only for Authorised Representatives onboard after
+                26 December 2025.
+            </div>
         </div>
 
     </div>
@@ -105,7 +121,7 @@
 <!--
 IMPORTANT NOTE (INTERNAL):
 The GPS Supervision Evidence page applies ONLY to Authorised Representatives
-and Corporate Authorised Representatives onboarded on or after 26 December 2025.
+onboarded on or after 26 December 2025.
 Submission is voluntary and consent-based.
 -->
 
