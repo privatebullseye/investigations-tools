@@ -36,8 +36,8 @@
     header h1 {
       margin: 0;
       font-size: 18px;
-      text-transform: uppercase;
       letter-spacing: .05em;
+      text-transform: uppercase;
     }
 
     header p {
@@ -69,18 +69,9 @@
 
     p {
       margin: 8px 0;
-      font-size: 14px;
       color: var(--muted);
-      line-height: 1.4;
-    }
-
-    .warn {
-      border-left: 4px solid var(--accent);
-      background: #fff7f7;
-      border-radius: 10px;
-      padding: 10px;
-      color: #7a1c1c;
       font-size: 14px;
+      line-height: 1.4;
     }
 
     label {
@@ -100,7 +91,7 @@
     }
 
     textarea {
-      min-height: 110px;
+      min-height: 120px;
       resize: vertical;
     }
 
@@ -114,12 +105,27 @@
       flex: 1 1 280px;
     }
 
+    .info {
+      background: #f0f7ff;
+      border-left: 4px solid #1976d2;
+      border-radius: 10px;
+      padding: 10px;
+      color: #1e3a5f;
+    }
+
+    .warn {
+      background: #fff7f7;
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      padding: 10px;
+      color: #7a1c1c;
+    }
+
     .soft {
       background: var(--soft);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 10px;
-      margin-top: 10px;
     }
 
     .row {
@@ -153,6 +159,11 @@
       font-size: 13px;
       white-space: pre-wrap;
     }
+
+    .tiny {
+      font-size: 12px;
+      color: #6b7280;
+    }
   </style>
 </head>
 
@@ -160,19 +171,155 @@
 
 <header>
   <h1>Titan Securities Pty Ltd</h1>
-  <p>New Advertising & Material Website Changes – Submission Log</p>
+  <p>New Advertising & Major Website Marketing Changes – Notification Log</p>
 </header>
 
 <main>
 
   <section class="card">
     <h2>What this submission is for</h2>
-    <p>
+    <div class="info">
       This page is used to notify Titan Securities of <strong>new advertising</strong> or
       <strong>material changes to existing advertising</strong>, including major website
-      marketing changes.
+      marketing updates.
+    </div>
+
+    <p>
+      Examples include new landing pages, promotional banners, paid advertisements,
+      homepage marketing statements, or changes to how services are advertised to the public.
     </p>
 
     <div class="warn">
-      This form is <strong>not</strong> for advice content, research commentary,
-      market u
+      This form is <strong>not</strong> for advice content, research commentary, market updates,
+      blog articles, or day-to-day factual information published on your website.
+    </div>
+
+    <p class="tiny">
+      Submitting this form creates a dated entry in Titan Securities’ Advertising Compliance Log
+      for supervision and audit purposes.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Representative details (required)</h2>
+
+    <div class="grid">
+      <div class="col">
+        <label>Representative name</label>
+        <input id="repName" type="text" required>
+      </div>
+
+      <div class="col">
+        <label>Representative email</label>
+        <input id="repEmail" type="email" required>
+      </div>
+
+      <div class="col">
+        <label>CAR name (if applicable)</label>
+        <input id="carName" type="text">
+      </div>
+    </div>
+
+    <label>Submission password</label>
+    <input id="password" type="password" placeholder="Required to submit">
+  </section>
+
+  <section class="card">
+    <h2>Advertising information (only complete what is relevant)</h2>
+
+    <div class="grid">
+      <div class="col">
+        <label>Platform (optional)</label>
+        <select id="platform">
+          <option value="">—</option>
+          <option>Website</option>
+          <option>LinkedIn</option>
+          <option>Facebook</option>
+          <option>Google Ads</option>
+          <option>Email</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="col">
+        <label>URL or page location (optional)</label>
+        <input id="targetUrl" type="text" placeholder="https://…">
+      </div>
+    </div>
+
+    <label>
+      Advertising wording extract or summary (optional)
+    </label>
+    <textarea id="draftCopy"
+      placeholder="Provide a short extract, headline, or summary of the advertising. Full website text is not required."></textarea>
+
+    <div class="soft">
+      <div class="row">
+        <input id="consentChk" type="checkbox">
+        <div class="tiny">
+          I confirm this submission relates to advertising or marketing only, and I consent to
+          this information being recorded for compliance supervision purposes.
+        </div>
+      </div>
+    </div>
+
+    <button id="btn">Submit notification</button>
+    <div id="out">Complete the required details and submit.</div>
+  </section>
+
+</main>
+
+<script>
+const GOOGLE_SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbxmMCl55HQzgNw1yPBHk9saXXIg4kWLrYsxE92ApffUnqYrA8K45Gd23ROiidwC_LPpVA/exec";
+
+async function getIP(){
+  try{
+    const r = await fetch("https://api.ipify.org?format=json",{cache:"no-store"});
+    const j = await r.json();
+    return j.ip || "Unavailable";
+  }catch{
+    return "Unavailable";
+  }
+}
+
+document.getElementById("btn").onclick = async () => {
+  const out = document.getElementById("out");
+
+  if(!repName.value || !repEmail.value)
+    return out.textContent="Representative name and email are required.";
+
+  if(!password.value)
+    return out.textContent="Password is required.";
+
+  if(!consentChk.checked)
+    return out.textContent="Consent must be confirmed.";
+
+  const payload = {
+    consent:true,
+    password:password.value,
+    repName:repName.value,
+    repEmail:repEmail.value,
+    carName:carName.value,
+    platform:platform.value,
+    targetUrl:targetUrl.value,
+    draftCopy:draftCopy.value,
+    publicIP:await getIP(),
+    pageUrl:location.href,
+    userAgent:navigator.userAgent
+  };
+
+  await fetch(GOOGLE_SCRIPT_URL,{
+    method:"POST",
+    mode:"no-cors",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body:JSON.stringify(payload)
+  });
+
+  out.textContent =
+    "Submitted successfully. Please email any supporting screenshots or materials to Titan Securities for review.";
+};
+</script>
+
+</body>
+</html>
