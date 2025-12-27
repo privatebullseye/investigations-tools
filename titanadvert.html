@@ -164,6 +164,13 @@
       font-size: 12px;
       color: #6b7280;
     }
+
+    .meta {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.35;
+    }
   </style>
 </head>
 
@@ -198,6 +205,12 @@
       Submitting this form creates a dated entry in Titan Securities’ Advertising Compliance Log
       for supervision and audit purposes.
     </p>
+
+    <div class="meta">
+      <strong>Deployment:</strong> Version 1 (27 Dec 2025, 14:16)<br>
+      <strong>Deployment ID:</strong>
+      AKfycbyTYYrdKx_PPE2g5vcA2kyC-WJRFgdnbDw5czMyqTlLEbWekLK-Z01Q389nVvpbFQvC
+    </div>
   </section>
 
   <section class="card">
@@ -247,9 +260,7 @@
       </div>
     </div>
 
-    <label>
-      Advertising wording extract or summary (optional)
-    </label>
+    <label>Advertising wording extract or summary (optional)</label>
     <textarea id="draftCopy"
       placeholder="Provide a short extract, headline, or summary of the advertising. Full website text is not required."></textarea>
 
@@ -265,13 +276,18 @@
 
     <button id="btn">Submit notification</button>
     <div id="out">Complete the required details and submit.</div>
+
+    <p class="tiny" style="margin-top:10px;">
+      After submitting, you must separately email the advertising copy and any supporting
+      screenshots or creative material to Titan Securities for compliance review.
+    </p>
   </section>
 
 </main>
 
 <script>
 const GOOGLE_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbxmMCl55HQzgNw1yPBHk9saXXIg4kWLrYsxE92ApffUnqYrA8K45Gd23ROiidwC_LPpVA/exec";
+  "https://script.google.com/macros/s/AKfycbyTYYrdKx_PPE2g5vcA2kyC-WJRFgdnbDw5czMyqTlLEbWekLK-Z01Q389nVvpbFQvC/exec";
 
 async function getIP(){
   try{
@@ -295,6 +311,8 @@ document.getElementById("btn").onclick = async () => {
   if(!consentChk.checked)
     return out.textContent="Consent must be confirmed.";
 
+  out.textContent = "Submitting...";
+
   const payload = {
     consent:true,
     password:password.value,
@@ -306,18 +324,26 @@ document.getElementById("btn").onclick = async () => {
     draftCopy:draftCopy.value,
     publicIP:await getIP(),
     pageUrl:location.href,
-    userAgent:navigator.userAgent
+    userAgent:navigator.userAgent,
+    deploymentVersion:"Version 1",
+    deploymentDateTime:"27 Dec 2025, 14:16",
+    deploymentId:"AKfycbyTYYrdKx_PPE2g5vcA2kyC-WJRFgdnbDw5czMyqTlLEbWekLK-Z01Q389nVvpbFQvC"
   };
 
-  await fetch(GOOGLE_SCRIPT_URL,{
-    method:"POST",
-    mode:"no-cors",
-    headers:{ "Content-Type":"text/plain;charset=utf-8" },
-    body:JSON.stringify(payload)
-  });
+  try{
+    await fetch(GOOGLE_SCRIPT_URL,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{ "Content-Type":"text/plain;charset=utf-8" },
+      body:JSON.stringify(payload)
+    });
 
-  out.textContent =
-    "Submitted successfully. Please email any supporting screenshots or materials to Titan Securities for review.";
+    out.textContent =
+      "Submitted successfully.\n\nNEXT STEP (required): Email the advertising copy and any supporting material to Titan Securities for compliance review.";
+  }catch(e){
+    out.textContent =
+      "Submission attempted.\n\nIf in doubt, please ensure the advertising copy is emailed to Titan Securities for review.";
+  }
 };
 </script>
 
