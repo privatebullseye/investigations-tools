@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Titan Securities Pty Ltd – Advertising & Website Change Submission</title>
+  <title>Titan Securities Pty Ltd – Advertising Submission</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    :root{
+    :root {
       --primary:#0b2a3c;
       --accent:#b71c1c;
       --bg:#f4f6f8;
@@ -17,144 +17,141 @@
       --border:#d9e1ea;
     }
 
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+    * { box-sizing: border-box; }
 
-    header{
-      background:var(--primary);
-      color:#fff;
-      padding:18px;
-      text-align:center;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
 
-    header h1{
-      margin:0;
-      font-size:18px;
-      letter-spacing:.05em;
-      text-transform:uppercase;
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 18px;
+      text-align: center;
     }
 
-    header p{
-      margin:6px 0 0;
-      font-size:13px;
-      opacity:.9;
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
     }
 
-    main{
-      max-width:980px;
-      margin:18px auto 44px;
-      padding:0 14px;
+    header p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      opacity: .9;
     }
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:12px;
-      padding:16px;
-      margin-bottom:14px;
-      box-shadow:0 2px 8px rgba(0,0,0,.06);
+    main {
+      max-width: 980px;
+      margin: 18px auto 44px;
+      padding: 0 14px;
     }
 
-    h2{
-      margin:0 0 10px;
-      font-size:16px;
-      color:var(--primary);
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
     }
 
-    p{
-      margin:8px 0;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.4;
+    h2 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: var(--primary);
     }
 
-    label{
-      display:block;
-      margin:10px 0 6px;
-      font-size:13px;
-      color:var(--muted);
+    p {
+      margin: 8px 0;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.4;
     }
 
-    input, select, textarea{
-      width:100%;
-      padding:10px;
-      border:1px solid var(--border);
-      border-radius:8px;
-      font-size:14px;
-      background:#fff;
+    .warn {
+      border-left: 4px solid var(--accent);
+      background: #fff7f7;
+      border-radius: 10px;
+      padding: 10px;
+      color: #7a1c1c;
+      font-size: 14px;
     }
 
-    textarea{
-      min-height:110px;
-      resize:vertical;
+    label {
+      display: block;
+      margin: 10px 0 6px;
+      font-size: 13px;
+      color: var(--muted);
     }
 
-    .grid{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
     }
 
-    .col{
-      flex:1 1 280px;
+    textarea {
+      min-height: 110px;
+      resize: vertical;
     }
 
-    .note{
-      background:#f8fafc;
-      border-left:4px solid var(--primary);
-      border-radius:10px;
-      padding:10px;
-      font-size:13px;
-      color:#374151;
+    .grid {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
-    .soft{
-      background:var(--soft);
-      border:1px solid var(--border);
-      border-radius:10px;
-      padding:10px;
+    .col {
+      flex: 1 1 280px;
     }
 
-    .row{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      margin-top:10px;
+    .soft {
+      background: var(--soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 10px;
     }
 
-    .row input{
-      width:auto;
-      margin-top:3px;
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-top: 10px;
     }
 
-    button{
-      background:var(--primary);
-      color:#fff;
-      border:none;
-      border-radius:8px;
-      padding:11px 16px;
-      font-size:15px;
-      cursor:pointer;
+    .row input {
+      width: auto;
+      margin-top: 3px;
     }
 
-    button:disabled{
-      opacity:.6;
-      cursor:default;
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 16px;
+      font-size: 15px;
+      cursor: pointer;
     }
 
-    #out{
-      margin-top:12px;
-      background:var(--soft);
-      border:1px solid var(--border);
-      border-radius:10px;
-      padding:10px;
-      font-size:13px;
-      white-space:pre-wrap;
-    }
-
-    .tiny{
-      font-size:12px;
-      color:#6b7280;
+    #out {
+      margin-top: 12px;
+      background: var(--soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -163,171 +160,19 @@
 
 <header>
   <h1>Titan Securities Pty Ltd</h1>
-  <p>Advertising & Website Change Submission (Compliance Log)</p>
+  <p>New Advertising & Material Website Changes – Submission Log</p>
 </header>
 
 <main>
 
   <section class="card">
-    <h2>What this page is for</h2>
+    <h2>What this submission is for</h2>
     <p>
-      This page is used to notify Titan Securities of proposed advertising activity or
-      **major changes to website promotional content**.
-    </p>
-    <div class="note">
-      This is <strong>not</strong> for day-to-day advice, market commentary, research articles,
-      blog posts, or factual updates.  
-      Only submit if you are making a material change to advertising, positioning, claims,
-      or promotional messaging.
-    </div>
-    <p class="tiny">
-      Submitting this form creates a timestamped entry in Titan Securities’ Advertising Compliance Log
-      for supervision and audit purposes.
-    </p>
-  </section>
-
-  <section class="card">
-    <h2>Representative details (required)</h2>
-
-    <div class="grid">
-      <div class="col">
-        <label>Representative name *</label>
-        <input id="repName" type="text">
-      </div>
-
-      <div class="col">
-        <label>Representative email *</label>
-        <input id="repEmail" type="email">
-      </div>
-
-      <div class="col">
-        <label>CAR name (if applicable)</label>
-        <input id="carName" type="text">
-      </div>
-    </div>
-
-    <label>Password *</label>
-    <input id="password" type="password">
-
-    <p class="tiny">
-      Password verification occurs server-side. This page records submissions only.
-    </p>
-  </section>
-
-  <section class="card">
-    <h2>Advertising / website information (optional)</h2>
-
-    <p class="tiny">
-      Complete what is relevant. Leave fields blank if not applicable.
+      This page is used to notify Titan Securities of <strong>new advertising</strong> or
+      <strong>material changes to existing advertising</strong>, including major website
+      marketing changes.
     </p>
 
-    <div class="grid">
-      <div class="col">
-        <label>Platform</label>
-        <select id="platform">
-          <option value=""></option>
-          <option>Website</option>
-          <option>LinkedIn</option>
-          <option>Facebook</option>
-          <option>Google Ads</option>
-          <option>Email</option>
-          <option>PDF / Brochure</option>
-        </select>
-      </div>
-
-      <div class="col">
-        <label>Account / URL</label>
-        <input id="handle" type="text">
-      </div>
-    </div>
-
-    <label>Summary / extract of advertising wording</label>
-    <textarea id="draftCopy"
-      placeholder="Brief extract or summary only. Do not paste full websites or long documents."></textarea>
-
-    <label>Target URL (if applicable)</label>
-    <input id="targetUrl" type="text">
-
-    <div class="soft">
-      <div class="row">
-        <input id="chkDisclaimers" type="checkbox">
-        <div class="tiny">Relevant disclaimers are included</div>
-      </div>
-
-      <div class="row">
-        <input id="chkFsg" type="checkbox">
-        <div class="tiny">FSG access is provided where required</div>
-      </div>
-
-      <div class="row">
-        <input id="consentChk" type="checkbox">
-        <div class="tiny">
-          I confirm this submission is accurate and consent to it being recorded
-          for supervision and compliance purposes.
-        </div>
-      </div>
-    </div>
-
-    <button id="btn">Submit to Compliance Log</button>
-    <div id="out">Complete the required details and submit.</div>
-  </section>
-
-</main>
-
-<script>
-const GOOGLE_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbxmMCl55HQzgNw1yPBHk9saXXIg4kWLrYsxE92ApffUnqYrA8K45Gd23ROiidwC_LPpVA/exec";
-
-async function getIP(){
-  try{
-    const r = await fetch("https://api.ipify.org?format=json",{cache:"no-store"});
-    const j = await r.json();
-    return j.ip || "Unavailable";
-  }catch{
-    return "Unavailable";
-  }
-}
-
-document.getElementById("btn").onclick = async () => {
-  const out = document.getElementById("out");
-
-  if(!repName.value || !repEmail.value)
-    return out.textContent="Representative name and email are required.";
-
-  if(!password.value)
-    return out.textContent="Password is required.";
-
-  if(!consentChk.checked)
-    return out.textContent="Consent is required.";
-
-  const payload = {
-    consent: true,
-    password: password.value,
-    repName: repName.value,
-    repEmail: repEmail.value,
-    carName: carName.value,
-    platform: platform.value,
-    handle: handle.value,
-    draftCopy: draftCopy.value,
-    targetUrl: targetUrl.value,
-    disclaimersIncluded: chkDisclaimers.checked,
-    fsgLinkIncluded: chkFsg.checked,
-    publicIP: await getIP(),
-    pageUrl: location.href,
-    userAgent: navigator.userAgent
-  };
-
-  await fetch(GOOGLE_SCRIPT_URL,{
-    method:"POST",
-    mode:"no-cors",
-    headers:{ "Content-Type":"text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
-  });
-
-  out.textContent =
-    "Submitted successfully. Email the advertising material to Titan Securities for approval.";
-};
-</script>
-
-</body>
-</html>
+    <div class="warn">
+      This form is <strong>not</strong> for advice content, research commentary,
+      market u
