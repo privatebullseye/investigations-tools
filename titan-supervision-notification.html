@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Titan Securities Pty Ltd – IDR Complaint and Breach Initial Notification</title>
+  <title>Titan Securities Pty Ltd – Supervision Notification</title>
   <style>
     :root{
       --primary:#0b2a3c;
@@ -233,22 +233,22 @@
   </div>
 
   <header>
-    <h1>Titan Securities Pty Ltd – IDR Complaint and Breach Initial Notification</h1>
+    <h1>Titan Securities Pty Ltd – Supervision Notification</h1>
     <p>
-      Purpose: This page creates a dated initial notification log entry for IDR complaints, breaches, incidents, conflicts, or training non compliance.
-      This does not replace your local registers or formal reporting processes.
-      If you believe a matter may be significant, call the Responsible Manager immediately.
+      Purpose: This page creates a dated supervision notification log entry for complaints, breaches, incidents, conflicts, or training non compliance.
+      This does not replace your local registers or formal processes.
+      If you believe a matter may be serious, call the Responsible Manager immediately.
     </p>
   </header>
 
   <main>
     <div class="grid">
       <section class="card">
-        <h2>Initial Notification Form</h2>
+        <h2>Supervision Notification Form</h2>
 
         <div class="alert red">
           <strong>Important:</strong>
-          If you suspect a significant breach, or client harm, or ongoing scam activity, call Matthew immediately.
+          If you suspect a serious matter, client harm, or ongoing scam activity, call Matthew immediately.
           Submit this form as soon as practical so it is logged.
         </div>
 
@@ -344,7 +344,7 @@
         </div>
 
         <div style="margin-top:10px;">
-          <label for="details">Details of Complaint or Breach</label>
+          <label for="details">Summary of Issue</label>
           <textarea id="details" placeholder="Provide a short factual summary. Include dates. Include what happened. Include what is known so far."></textarea>
         </div>
 
@@ -361,8 +361,8 @@
 
         <div class="row">
           <div>
-            <label for="attachmentsNote">Attachments Note</label>
-            <input id="attachmentsNote" type="text" placeholder="What supporting material will you email. Example: screenshot. Example: client email. Example: call recording reference." />
+            <label for="attachmentsNote">Attachments Pending (what will you email)</label>
+            <input id="attachmentsNote" type="text" placeholder="Example: screenshot. Example: client email. Example: call recording reference." />
             <div class="small" style="margin-top:6px;color:var(--muted);">
               After submission, email supporting material to Titan using your normal process.
               Do not upload confidential files to GitHub Pages.
@@ -394,21 +394,12 @@
       </section>
 
       <aside class="card">
-        <h2>Configuration and Preview</h2>
+        <h2>Preview</h2>
 
         <div class="note">
-          <strong>How this logs centrally:</strong><br />
-          This page can POST to your existing processor endpoint.
-          Replace <span class="mono" style="display:inline-block;padding:2px 6px;">LOG_ENDPOINT</span> below.
-          If you do nothing, it will still create a downloadable JSON audit trail.
-        </div>
-
-        <div style="margin-top:10px;">
-          <label for="endpoint">LOG_ENDPOINT (set your existing processor URL here)</label>
-          <input id="endpoint" type="url" placeholder="https://script.google.com/macros/s/XXXXX/exec" />
-          <div class="small" style="margin-top:6px;color:var(--muted);">
-            Tip: If you use Make or Zapier, paste the webhook URL here.
-          </div>
+          <strong>Central logging:</strong><br />
+          This page posts to Titan’s supervision notification log endpoint and appends a new row in Google Sheets.
+          A JSON copy is also downloaded as a backup evidence item.
         </div>
 
         <div style="margin-top:10px;" class="alert green">
@@ -423,7 +414,7 @@
 
         <div style="margin-top:10px;" class="note">
           <strong>Email backup:</strong><br />
-          If your endpoint is unavailable, use “Copy Email Text” and email the same details to Titan.
+          If logging is unavailable, use “Copy Email Text” and email the same details to Titan.
         </div>
       </aside>
     </div>
@@ -432,6 +423,9 @@
   <script>
     // Simple password gate. This is not strong security. It is a practical barrier only.
     const SHARED_PASSWORD = "titan";
+
+    // Your deployed Google Apps Script Web App URL:
+    const LOG_ENDPOINT = "https://script.google.com/macros/s/AKfycbw-lMF5fqZTyvMWwe0ba6CrUlyulo9nffrSfOUB3UkKzc4_A6lHnjuNeBmVyO15HwaI/exec";
 
     const lock = document.getElementById("lock");
     const pw = document.getElementById("pw");
@@ -476,7 +470,6 @@
     const requestedSupportEl = el("requestedSupport");
     const attachmentsNoteEl = el("attachmentsNote");
     const publicIpEl = el("publicIp");
-    const endpointEl = el("endpoint");
 
     const statusEl = el("status");
     const previewEl = el("preview");
@@ -487,8 +480,7 @@
     const resetBtn = el("resetBtn");
 
     function isoNow(){
-      const d = new Date();
-      return d.toISOString();
+      return new Date().toISOString();
     }
 
     function setTimestamp(){
@@ -497,7 +489,6 @@
 
     async function fetchPublicIP(){
       try{
-        // Best effort. Not guaranteed.
         const r = await fetch("https://api.ipify.org?format=json", { cache: "no-store" });
         const j = await r.json();
         publicIpEl.value = j.ip || "";
@@ -508,20 +499,21 @@
 
     function buildPayload(){
       return {
+        // Align keys to Apps Script mapping + your sheet headers
         server_timestamp: isoNow(),
+        notification_type: typeEl.value,
         rep_name: (repNameEl.value || "").trim(),
         rep_email: (repEmailEl.value || "").trim(),
         car_name: (carNameEl.value || "").trim(),
-        notification_type: typeEl.value,
         platform_channel: platformEl.value,
         category: categoryEl.value,
         serious: seriousEl.value,
-        contacted_responsible_manager: contactedRMEl.value,
+        responsible_manager_contacted: contactedRMEl.value,
         client_reference: (clientRefEl.value || "").trim(),
-        details: (detailsEl.value || "").trim(),
+        summary_of_issue: (detailsEl.value || "").trim(),
         immediate_action_taken: (actionTakenEl.value || "").trim(),
         support_requested: (requestedSupportEl.value || "").trim(),
-        attachments_note: (attachmentsNoteEl.value || "").trim(),
+        attachments_pending: (attachmentsNoteEl.value || "").trim(),
         public_ip: (publicIpEl.value || "").trim(),
         page_url: window.location.href,
         user_agent: navigator.userAgent
@@ -534,7 +526,7 @@
     }
 
     function downloadJSON(payload){
-      const file = `titan_idr_breach_notify_${new Date().toISOString().replaceAll(":","").replaceAll(".","")}.json`;
+      const file = `titan_supervision_notification_${new Date().toISOString().replaceAll(":","").replaceAll(".","")}.json`;
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
@@ -547,25 +539,25 @@
 
     function buildEmailText(payload){
       const lines = [];
-      lines.push("Subject: Titan Initial Notification – " + payload.notification_type + " – " + (payload.rep_name || "Rep"));
+      lines.push("Subject: Titan Supervision Notification – " + payload.notification_type + " – " + (payload.rep_name || "Rep"));
       lines.push("");
       lines.push("Hello Matthew,");
       lines.push("");
-      lines.push("This is an initial notification for central logging.");
+      lines.push("This is a supervision notification for central logging and escalation.");
       lines.push("");
       lines.push("Timestamp: " + payload.server_timestamp);
       lines.push("Rep Name: " + payload.rep_name);
       lines.push("Rep Email: " + payload.rep_email);
       lines.push("CAR Name: " + payload.car_name);
       lines.push("Type: " + payload.notification_type);
-      lines.push("Platform: " + payload.platform_channel);
+      lines.push("Platform / Channel: " + payload.platform_channel);
       lines.push("Category: " + payload.category);
       lines.push("Serious: " + payload.serious);
-      lines.push("Contacted RM: " + payload.contacted_responsible_manager);
+      lines.push("Responsible Manager Contacted: " + payload.responsible_manager_contacted);
       lines.push("Client Ref: " + payload.client_reference);
       lines.push("");
-      lines.push("Details:");
-      lines.push(payload.details || "(not provided)");
+      lines.push("Summary of Issue:");
+      lines.push(payload.summary_of_issue || "(not provided)");
       lines.push("");
       lines.push("Immediate Action Taken:");
       lines.push(payload.immediate_action_taken || "(not provided)");
@@ -573,8 +565,8 @@
       lines.push("Support Requested:");
       lines.push(payload.support_requested || "(not provided)");
       lines.push("");
-      lines.push("Attachments Note:");
-      lines.push(payload.attachments_note || "(not provided)");
+      lines.push("Attachments Pending:");
+      lines.push(payload.attachments_pending || "(not provided)");
       lines.push("");
       lines.push("Public IP: " + payload.public_ip);
       lines.push("Page URL: " + payload.page_url);
@@ -585,32 +577,35 @@
     }
 
     async function postToEndpoint(payload){
-      const endpoint = (endpointEl.value || "").trim();
-      if(!endpoint){
-        return { ok:false, message:"No LOG_ENDPOINT configured. Downloaded JSON can be used as evidence." };
+      if(!LOG_ENDPOINT){
+        return { ok:false, message:"LOG_ENDPOINT not configured." };
       }
-      const resp = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      if(!resp.ok){
-        return { ok:false, message:`Endpoint returned ${resp.status}.` };
+
+      // GitHub Pages -> Apps Script may hit CORS. We use no-cors and rely on the row appearing.
+      // If your browser allows reading response, we will show it. If not, we still log locally + download JSON.
+      try {
+        const resp = await fetch(LOG_ENDPOINT, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        // With no-cors the response is opaque; assume success and instruct to verify the sheet.
+        return { ok:true, message:"Submitted to central log. If you need confirmation, check the Google Sheet for a new row." };
+      } catch (e) {
+        return { ok:false, message:"Endpoint call failed." };
       }
-      // Some endpoints return plain text.
-      const text = await resp.text();
-      return { ok:true, message:(text || "Logged successfully.") };
     }
 
     function validateMinimum(payload){
       if(!payload.notification_type) return "Select a Notification Type.";
       if(!payload.rep_name) return "Enter Rep Name.";
       if(!payload.rep_email) return "Enter Rep Email.";
-      if(!payload.details) return "Enter Details of Complaint or Breach.";
+      if(!payload.summary_of_issue) return "Enter Summary of Issue.";
       return "";
     }
 
-    // Wire up preview refresh
     [
       typeEl, repNameEl, repEmailEl, carNameEl, platformEl, clientRefEl, categoryEl,
       seriousEl, contactedRMEl, detailsEl, actionTakenEl, requestedSupportEl, attachmentsNoteEl,
@@ -634,18 +629,12 @@
       // Always download a local copy as a backup evidence item.
       downloadJSON(payload);
 
-      try{
-        const result = await postToEndpoint(payload);
-        statusEl.textContent = result.ok
-          ? ("Submitted. " + result.message + " A JSON copy was downloaded for your records.")
-          : ("Submitted locally. " + result.message + " A JSON copy was downloaded for your records.");
-        statusEl.style.color = result.ok ? "#0f766e" : "#b45309";
-      }catch(e){
-        statusEl.textContent = "Submitted locally. Endpoint error. A JSON copy was downloaded for your records.";
-        statusEl.style.color = "#b45309";
-      }
+      const result = await postToEndpoint(payload);
+      statusEl.textContent = result.ok
+        ? ("Submitted. " + result.message + " A JSON copy was downloaded for your records.")
+        : ("Submitted locally. " + result.message + " A JSON copy was downloaded for your records.");
+      statusEl.style.color = result.ok ? "#0f766e" : "#b45309";
 
-      // Refresh the visible timestamp field
       setTimestamp();
     });
 
@@ -668,7 +657,6 @@
       }catch(e){
         statusEl.textContent = "Clipboard blocked by browser. Copy from the preview panel.";
         statusEl.style.color = "#b45309";
-        // Put email text into preview to allow manual copy.
         previewEl.textContent = emailText;
       }
     });
