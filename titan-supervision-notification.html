@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Titan Securities Pty Ltd – IDR Complaint and Breach Initial Notification</title>
+  <style>
+    :root{
+      --primary:#0b2a3c;
+      --accent:#b71c1c;
+      --bg:#f4f6f8;
+      --card:#ffffff;
+      --text:#1f2328;
+      --muted:#4b5563;
+      --soft:#eef2f6;
+      --border:#d9e1ea;
+      --ok:#0f766e;
+      --warn:#b45309;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family: Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    header{
+      background:var(--primary);
+      color:#fff;
+      padding:16px 18px;
+    }
+    header h1{
+      margin:0;
+      font-size:18px;
+      font-weight:700;
+    }
+    header p{
+      margin:6px 0 0 0;
+      font-size:12.5px;
+      opacity:.95;
+      line-height:1.35;
+    }
+    main{
+      max-width:1100px;
+      margin:18px auto;
+      padding:0 14px 28px 14px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr;}
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.04);
+    }
+    .card h2{
+      margin:0 0 10px 0;
+      font-size:15px;
+      font-weight:700;
+    }
+    .note{
+      background:var(--soft);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 10px;
+      font-size:12.5px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+    .note strong{color:var(--text);}
+    .alert{
+      border-radius:10px;
+      padding:10px 10px;
+      font-size:12.5px;
+      line-height:1.4;
+      border:1px solid var(--border);
+      background:#fff;
+    }
+    .alert.red{
+      border-color: rgba(183,28,28,.35);
+      background: rgba(183,28,28,.06);
+    }
+    .alert.green{
+      border-color: rgba(15,118,110,.35);
+      background: rgba(15,118,110,.06);
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width: 650px){
+      .row{grid-template-columns:1fr;}
+    }
+    label{
+      display:block;
+      font-size:12.5px;
+      color:var(--muted);
+      margin:0 0 6px 0;
+    }
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 10px;
+      font-size:13.5px;
+      outline:none;
+      background:#fff;
+    }
+    textarea{min-height:120px; resize:vertical;}
+    .small{font-size:12px;}
+    .inline{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:8px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:#fff;
+      font-size:12.5px;
+      color:var(--text);
+    }
+    .btns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    button{
+      border:0;
+      border-radius:10px;
+      padding:10px 12px;
+      font-size:13.5px;
+      cursor:pointer;
+    }
+    .primary{
+      background:var(--primary);
+      color:#fff;
+    }
+    .secondary{
+      background:#111827;
+      color:#fff;
+    }
+    .ghost{
+      background:#fff;
+      border:1px solid var(--border);
+      color:var(--text);
+    }
+    .danger{
+      background:var(--accent);
+      color:#fff;
+    }
+    .status{
+      margin-top:10px;
+      font-size:12.5px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px;
+      white-space:pre-wrap;
+      background: #0b1220;
+      color: #e5e7eb;
+      border-radius:10px;
+      padding:10px;
+      border:1px solid rgba(255,255,255,.08);
+      overflow:auto;
+    }
+    .footer{
+      margin-top:12px;
+      font-size:11.5px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+    .lock{
+      position:fixed;
+      inset:0;
+      background:rgba(11,42,60,.78);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:999;
+    }
+    .lockcard{
+      width:min(520px, 100%);
+      background:#fff;
+      border-radius:14px;
+      padding:14px;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: 0 14px 40px rgba(0,0,0,.25);
+    }
+    .lockcard h2{margin:0 0 8px 0; font-size:16px;}
+    .lockcard p{margin:0 0 10px 0; font-size:12.5px; color:var(--muted); line-height:1.4;}
+  </style>
+</head>
+
+<body>
+  <div class="lock" id="lock">
+    <div class="lockcard">
+      <h2>Restricted Access</h2>
+      <p>
+        This page is for Authorised Representatives and Corporate Authorised Representatives of Titan Securities Pty Ltd.
+        Enter the shared password to continue.
+      </p>
+      <label for="pw">Password</label>
+      <input id="pw" type="password" placeholder="Enter password" autocomplete="current-password" />
+      <div class="btns">
+        <button class="primary" id="unlockBtn" type="button">Unlock</button>
+        <button class="ghost" id="clearBtn" type="button">Clear</button>
+      </div>
+      <div class="status" id="lockStatus"></div>
+      <div class="footer">
+        Note: This is a front-end access gate only. Do not store confidential client documents on GitHub Pages.
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <h1>Titan Securities Pty Ltd – IDR Complaint and Breach Initial Notification</h1>
+    <p>
+      Purpose: This page creates a dated initial notification log entry for IDR complaints, breaches, incidents, conflicts, or training non compliance.
+      This does not replace your local registers or formal reporting processes.
+      If you believe a matter may be significant, call the Responsible Manager immediately.
+    </p>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section class="card">
+        <h2>Initial Notification Form</h2>
+
+        <div class="alert red">
+          <strong>Important:</strong>
+          If you suspect a significant breach, or client harm, or ongoing scam activity, call Matthew immediately.
+          Submit this form as soon as practical so it is logged.
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="timestamp">Server Timestamp (auto)</label>
+            <input id="timestamp" type="text" readonly />
+            <div class="small" style="margin-top:6px;color:var(--muted);">
+              This timestamp is recorded on submission as well.
+            </div>
+          </div>
+          <div>
+            <label for="type">Notification Type</label>
+            <select id="type">
+              <option value="Complaint (IDR)">Complaint (IDR)</option>
+              <option value="Breach">Breach</option>
+              <option value="Incident">Incident</option>
+              <option value="Conflict of Interest">Conflict of Interest</option>
+              <option value="Training Non Compliance">Training Non Compliance</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="repName">Rep Name</label>
+            <input id="repName" type="text" placeholder="Full name" />
+          </div>
+          <div>
+            <label for="repEmail">Rep Email</label>
+            <input id="repEmail" type="email" placeholder="name@domain.com" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="carName">CAR Name (if applicable)</label>
+            <input id="carName" type="text" placeholder="Corporate Authorised Representative name" />
+          </div>
+          <div>
+            <label for="platform">Platform / Channel</label>
+            <select id="platform">
+              <option value="Phone">Phone</option>
+              <option value="Email">Email</option>
+              <option value="Website">Website</option>
+              <option value="Social Media">Social Media</option>
+              <option value="In Person">In Person</option>
+              <option value="Third Party">Third Party</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="clientRef">Client Name and Account Reference (optional)</label>
+            <input id="clientRef" type="text" placeholder="Client name and account reference if known" />
+          </div>
+          <div>
+            <label for="category">Category</label>
+            <select id="category">
+              <option value="Disclosure">Disclosure</option>
+              <option value="Conduct">Conduct</option>
+              <option value="Systems and Controls">Systems and Controls</option>
+              <option value="Marketing and Communications">Marketing and Communications</option>
+              <option value="Advice Process">Advice Process</option>
+              <option value="Client Complaint Handling">Client Complaint Handling</option>
+              <option value="Training and Competence">Training and Competence</option>
+              <option value="Conflicts">Conflicts</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="serious">Serious</label>
+            <select id="serious">
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+              <option value="Unsure">Unsure</option>
+            </select>
+          </div>
+          <div>
+            <label for="contactedRM">Have you contacted the Responsible Manager</label>
+            <select id="contactedRM">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="Not yet">Not yet</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="details">Details of Complaint or Breach</label>
+          <textarea id="details" placeholder="Provide a short factual summary. Include dates. Include what happened. Include what is known so far."></textarea>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="actionTaken">Immediate Action Taken</label>
+            <textarea id="actionTaken" placeholder="What did you do immediately. Example: paused publishing. Example: acknowledged complaint. Example: stopped contact."></textarea>
+          </div>
+          <div>
+            <label for="requestedSupport">Support Requested from Titan</label>
+            <textarea id="requestedSupport" placeholder="What you need from Matthew. Example: review wording. Example: next steps. Example: respond to client."></textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="attachmentsNote">Attachments Note</label>
+            <input id="attachmentsNote" type="text" placeholder="What supporting material will you email. Example: screenshot. Example: client email. Example: call recording reference." />
+            <div class="small" style="margin-top:6px;color:var(--muted);">
+              After submission, email supporting material to Titan using your normal process.
+              Do not upload confidential files to GitHub Pages.
+            </div>
+          </div>
+          <div>
+            <label for="publicIp">Public IP (auto where available)</label>
+            <input id="publicIp" type="text" readonly placeholder="Fetching…" />
+          </div>
+        </div>
+
+        <div class="inline">
+          <span class="chip"><strong>Consent:</strong> This submission creates an internal log entry for supervision evidence.</span>
+          <span class="chip"><strong>Retention:</strong> Keep your local register entries as usual.</span>
+        </div>
+
+        <div class="btns">
+          <button class="primary" type="button" id="submitBtn">Submit and Log</button>
+          <button class="ghost" type="button" id="downloadBtn">Download JSON Copy</button>
+          <button class="secondary" type="button" id="copyEmailBtn">Copy Email Text</button>
+          <button class="danger" type="button" id="resetBtn">Reset Form</button>
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <div class="footer">
+          Note: Redact or amend any statement in this section if required.
+        </div>
+      </section>
+
+      <aside class="card">
+        <h2>Configuration and Preview</h2>
+
+        <div class="note">
+          <strong>How this logs centrally:</strong><br />
+          This page can POST to your existing processor endpoint.
+          Replace <span class="mono" style="display:inline-block;padding:2px 6px;">LOG_ENDPOINT</span> below.
+          If you do nothing, it will still create a downloadable JSON audit trail.
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="endpoint">LOG_ENDPOINT (set your existing processor URL here)</label>
+          <input id="endpoint" type="url" placeholder="https://script.google.com/macros/s/XXXXX/exec" />
+          <div class="small" style="margin-top:6px;color:var(--muted);">
+            Tip: If you use Make or Zapier, paste the webhook URL here.
+          </div>
+        </div>
+
+        <div style="margin-top:10px;" class="alert green">
+          <strong>What gets logged:</strong><br />
+          Timestamp, rep identity, CAR name, type, category, seriousness, summary, actions, requested support, public IP, and page URL.
+        </div>
+
+        <div style="margin-top:10px;">
+          <label>Payload Preview</label>
+          <div class="mono" id="preview">{}</div>
+        </div>
+
+        <div style="margin-top:10px;" class="note">
+          <strong>Email backup:</strong><br />
+          If your endpoint is unavailable, use “Copy Email Text” and email the same details to Titan.
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    // Simple password gate. This is not strong security. It is a practical barrier only.
+    const SHARED_PASSWORD = "titan";
+
+    const lock = document.getElementById("lock");
+    const pw = document.getElementById("pw");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const lockStatus = document.getElementById("lockStatus");
+
+    function unlock(){
+      const entered = (pw.value || "").trim();
+      if(entered === SHARED_PASSWORD){
+        lock.style.display = "none";
+        lockStatus.textContent = "";
+        localStorage.setItem("titan_notify_unlocked", "1");
+      } else {
+        lockStatus.textContent = "Incorrect password.";
+      }
+    }
+
+    unlockBtn.addEventListener("click", unlock);
+    pw.addEventListener("keydown", (e) => { if(e.key === "Enter") unlock(); });
+    clearBtn.addEventListener("click", () => { pw.value = ""; lockStatus.textContent = ""; });
+
+    if(localStorage.getItem("titan_notify_unlocked") === "1"){
+      lock.style.display = "none";
+    }
+
+    // Elements
+    const el = (id) => document.getElementById(id);
+
+    const timestampEl = el("timestamp");
+    const typeEl = el("type");
+    const repNameEl = el("repName");
+    const repEmailEl = el("repEmail");
+    const carNameEl = el("carName");
+    const platformEl = el("platform");
+    const clientRefEl = el("clientRef");
+    const categoryEl = el("category");
+    const seriousEl = el("serious");
+    const contactedRMEl = el("contactedRM");
+    const detailsEl = el("details");
+    const actionTakenEl = el("actionTaken");
+    const requestedSupportEl = el("requestedSupport");
+    const attachmentsNoteEl = el("attachmentsNote");
+    const publicIpEl = el("publicIp");
+    const endpointEl = el("endpoint");
+
+    const statusEl = el("status");
+    const previewEl = el("preview");
+
+    const submitBtn = el("submitBtn");
+    const downloadBtn = el("downloadBtn");
+    const copyEmailBtn = el("copyEmailBtn");
+    const resetBtn = el("resetBtn");
+
+    function isoNow(){
+      const d = new Date();
+      return d.toISOString();
+    }
+
+    function setTimestamp(){
+      timestampEl.value = isoNow();
+    }
+
+    async function fetchPublicIP(){
+      try{
+        // Best effort. Not guaranteed.
+        const r = await fetch("https://api.ipify.org?format=json", { cache: "no-store" });
+        const j = await r.json();
+        publicIpEl.value = j.ip || "";
+      }catch(e){
+        publicIpEl.value = "";
+      }
+    }
+
+    function buildPayload(){
+      return {
+        server_timestamp: isoNow(),
+        rep_name: (repNameEl.value || "").trim(),
+        rep_email: (repEmailEl.value || "").trim(),
+        car_name: (carNameEl.value || "").trim(),
+        notification_type: typeEl.value,
+        platform_channel: platformEl.value,
+        category: categoryEl.value,
+        serious: seriousEl.value,
+        contacted_responsible_manager: contactedRMEl.value,
+        client_reference: (clientRefEl.value || "").trim(),
+        details: (detailsEl.value || "").trim(),
+        immediate_action_taken: (actionTakenEl.value || "").trim(),
+        support_requested: (requestedSupportEl.value || "").trim(),
+        attachments_note: (attachmentsNoteEl.value || "").trim(),
+        public_ip: (publicIpEl.value || "").trim(),
+        page_url: window.location.href,
+        user_agent: navigator.userAgent
+      };
+    }
+
+    function refreshPreview(){
+      const p = buildPayload();
+      previewEl.textContent = JSON.stringify(p, null, 2);
+    }
+
+    function downloadJSON(payload){
+      const file = `titan_idr_breach_notify_${new Date().toISOString().replaceAll(":","").replaceAll(".","")}.json`;
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = file;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function buildEmailText(payload){
+      const lines = [];
+      lines.push("Subject: Titan Initial Notification – " + payload.notification_type + " – " + (payload.rep_name || "Rep"));
+      lines.push("");
+      lines.push("Hello Matthew,");
+      lines.push("");
+      lines.push("This is an initial notification for central logging.");
+      lines.push("");
+      lines.push("Timestamp: " + payload.server_timestamp);
+      lines.push("Rep Name: " + payload.rep_name);
+      lines.push("Rep Email: " + payload.rep_email);
+      lines.push("CAR Name: " + payload.car_name);
+      lines.push("Type: " + payload.notification_type);
+      lines.push("Platform: " + payload.platform_channel);
+      lines.push("Category: " + payload.category);
+      lines.push("Serious: " + payload.serious);
+      lines.push("Contacted RM: " + payload.contacted_responsible_manager);
+      lines.push("Client Ref: " + payload.client_reference);
+      lines.push("");
+      lines.push("Details:");
+      lines.push(payload.details || "(not provided)");
+      lines.push("");
+      lines.push("Immediate Action Taken:");
+      lines.push(payload.immediate_action_taken || "(not provided)");
+      lines.push("");
+      lines.push("Support Requested:");
+      lines.push(payload.support_requested || "(not provided)");
+      lines.push("");
+      lines.push("Attachments Note:");
+      lines.push(payload.attachments_note || "(not provided)");
+      lines.push("");
+      lines.push("Public IP: " + payload.public_ip);
+      lines.push("Page URL: " + payload.page_url);
+      lines.push("");
+      lines.push("Regards,");
+      lines.push(payload.rep_name || "Rep");
+      return lines.join("\n");
+    }
+
+    async function postToEndpoint(payload){
+      const endpoint = (endpointEl.value || "").trim();
+      if(!endpoint){
+        return { ok:false, message:"No LOG_ENDPOINT configured. Downloaded JSON can be used as evidence." };
+      }
+      const resp = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if(!resp.ok){
+        return { ok:false, message:`Endpoint returned ${resp.status}.` };
+      }
+      // Some endpoints return plain text.
+      const text = await resp.text();
+      return { ok:true, message:(text || "Logged successfully.") };
+    }
+
+    function validateMinimum(payload){
+      if(!payload.notification_type) return "Select a Notification Type.";
+      if(!payload.rep_name) return "Enter Rep Name.";
+      if(!payload.rep_email) return "Enter Rep Email.";
+      if(!payload.details) return "Enter Details of Complaint or Breach.";
+      return "";
+    }
+
+    // Wire up preview refresh
+    [
+      typeEl, repNameEl, repEmailEl, carNameEl, platformEl, clientRefEl, categoryEl,
+      seriousEl, contactedRMEl, detailsEl, actionTakenEl, requestedSupportEl, attachmentsNoteEl,
+      publicIpEl
+    ].forEach(x => x.addEventListener("input", refreshPreview));
+
+    submitBtn.addEventListener("click", async () => {
+      statusEl.textContent = "Submitting…";
+      statusEl.style.color = "#4b5563";
+
+      const payload = buildPayload();
+      const err = validateMinimum(payload);
+      refreshPreview();
+
+      if(err){
+        statusEl.textContent = err;
+        statusEl.style.color = "#b71c1c";
+        return;
+      }
+
+      // Always download a local copy as a backup evidence item.
+      downloadJSON(payload);
+
+      try{
+        const result = await postToEndpoint(payload);
+        statusEl.textContent = result.ok
+          ? ("Submitted. " + result.message + " A JSON copy was downloaded for your records.")
+          : ("Submitted locally. " + result.message + " A JSON copy was downloaded for your records.");
+        statusEl.style.color = result.ok ? "#0f766e" : "#b45309";
+      }catch(e){
+        statusEl.textContent = "Submitted locally. Endpoint error. A JSON copy was downloaded for your records.";
+        statusEl.style.color = "#b45309";
+      }
+
+      // Refresh the visible timestamp field
+      setTimestamp();
+    });
+
+    downloadBtn.addEventListener("click", () => {
+      const payload = buildPayload();
+      refreshPreview();
+      downloadJSON(payload);
+      statusEl.textContent = "Downloaded JSON copy.";
+      statusEl.style.color = "#0f766e";
+    });
+
+    copyEmailBtn.addEventListener("click", async () => {
+      const payload = buildPayload();
+      refreshPreview();
+      const emailText = buildEmailText(payload);
+      try{
+        await navigator.clipboard.writeText(emailText);
+        statusEl.textContent = "Email text copied to clipboard.";
+        statusEl.style.color = "#0f766e";
+      }catch(e){
+        statusEl.textContent = "Clipboard blocked by browser. Copy from the preview panel.";
+        statusEl.style.color = "#b45309";
+        // Put email text into preview to allow manual copy.
+        previewEl.textContent = emailText;
+      }
+    });
+
+    resetBtn.addEventListener("click", () => {
+      if(!confirm("Reset the form fields?")) return;
+      repNameEl.value = "";
+      repEmailEl.value = "";
+      carNameEl.value = "";
+      clientRefEl.value = "";
+      detailsEl.value = "";
+      actionTakenEl.value = "";
+      requestedSupportEl.value = "";
+      attachmentsNoteEl.value = "";
+      seriousEl.value = "No";
+      contactedRMEl.value = "Not yet";
+      typeEl.value = "Complaint (IDR)";
+      platformEl.value = "Phone";
+      categoryEl.value = "Disclosure";
+      statusEl.textContent = "Form reset.";
+      statusEl.style.color = "#4b5563";
+      setTimestamp();
+      refreshPreview();
+    });
+
+    // Init
+    setTimestamp();
+    fetchPublicIP().finally(refreshPreview);
+  </script>
+</body>
+</html>
