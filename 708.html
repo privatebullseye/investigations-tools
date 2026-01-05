@@ -416,8 +416,8 @@
   <script>
     const SHARED_PASSWORD = "titan";
 
-    // Replace with your deployed Google Apps Script Web App URL
-    const LOG_ENDPOINT = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+    // Your deployed Google Apps Script Web App URL:
+    const LOG_ENDPOINT = "https://script.google.com/macros/s/AKfycbxCpq1DQkKk-nEWwEP4itmeot5ZUcL3E3iRGuOHXGDJWjNV5b31CBORbFLyJErzupQm/exec";
 
     const lock = document.getElementById("lock");
     const pw = document.getElementById("pw");
@@ -572,12 +572,11 @@
     }
 
     async function postToEndpoint(payload){
-      if(!LOG_ENDPOINT || LOG_ENDPOINT.includes("PASTE_YOUR_")){
+      if(!LOG_ENDPOINT){
         return { ok:false, message:"LOG_ENDPOINT not configured." };
       }
 
-      // Use "no-cors" for GitHub Pages -> Apps Script compatibility.
-      // Response will be opaque. Assume success and verify in the Sheet.
+      // GitHub Pages -> Apps Script may hit CORS. Use no-cors and verify the row appears in the Sheet.
       try {
         await fetch(LOG_ENDPOINT, {
           method: "POST",
@@ -621,7 +620,6 @@
         return;
       }
 
-      // Always download a local copy as backup evidence
       downloadJSON(payload);
 
       const result = await postToEndpoint(payload);
