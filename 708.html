@@ -264,7 +264,7 @@
             <label for="pathway">Wholesale pathway relied on</label>
             <select id="pathway">
               <option value="s708(8) Sophisticated (Accountant Certificate)">s708(8) Sophisticated (Accountant Certificate)</option>
-              <option value="s708(10) Sophisticated (>$500k investment)">s708(10) Sophisticated (>$500k investment)</option>
+              <option value="s708(10) Sophisticated (&gt;$500k investment)">s708(10) Sophisticated (&gt;$500k investment)</option>
               <option value="Professional Investor s708(11)">Professional Investor s708(11)</option>
               <option value="Other wholesale basis">Other wholesale basis</option>
             </select>
@@ -416,8 +416,8 @@
   <script>
     const SHARED_PASSWORD = "titan";
 
-    // Your deployed Google Apps Script Web App URL:
-    const LOG_ENDPOINT = "https://script.google.com/macros/s/AKfycbxCpq1DQkKk-nEWwEP4itmeot5ZUcL3E3iRGuOHXGDJWjNV5b31CBORbFLyJErzupQm/exec";
+    // ✅ Your NEW deployed Google Apps Script Web App URL (Version 2)
+    const LOG_ENDPOINT = "https://script.google.com/macros/s/AKfycbzPZoPyUK_Yqm4oDVjKeJOVjwHxOYJPcI21xopm-C1LMHzmE2fIBxRQmlW5mlMRBMP6/exec";
 
     const lock = document.getElementById("lock");
     const pw = document.getElementById("pw");
@@ -571,21 +571,24 @@
       return lines.join("\n");
     }
 
+    // IMPORTANT:
+    // From GitHub Pages you may not be able to read the response (CORS).
+    // This still logs to the Sheet if the Web App is deployed as:
+    // Execute as: Me   |   Who has access: Anyone
     async function postToEndpoint(payload){
       if(!LOG_ENDPOINT){
         return { ok:false, message:"LOG_ENDPOINT not configured." };
       }
 
-      // GitHub Pages -> Apps Script may hit CORS. Use no-cors and verify the row appears in the Sheet.
-      try {
+      try{
         await fetch(LOG_ENDPOINT, {
           method: "POST",
           mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
-        return { ok:true, message:"Submitted. If you need confirmation, check the Google Sheet for a new row." };
-      } catch (e) {
+        return { ok:true, message:"Submitted. Check the Google Sheet for a new row if you need confirmation." };
+      }catch(e){
         return { ok:false, message:"Endpoint call failed." };
       }
     }
