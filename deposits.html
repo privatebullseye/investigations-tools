@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Titan Securities Pty Ltd – Deposit Direction Log</title>
+  <style>
+    :root{
+      --primary:#0b2a3c;
+      --accent:#b71c1c;
+      --bg:#f4f6f8;
+      --card:#ffffff;
+      --text:#1f2328;
+      --muted:#4b5563;
+      --soft:#eef2f6;
+      --border:#d9e1ea;
+      --ok:#0f766e;
+      --warn:#b45309;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family: Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    header{
+      background:var(--primary);
+      color:#fff;
+      padding:16px 18px;
+    }
+    header h1{
+      margin:0;
+      font-size:18px;
+      font-weight:700;
+    }
+    header p{
+      margin:6px 0 0 0;
+      font-size:12.5px;
+      opacity:.95;
+      line-height:1.35;
+    }
+    main{
+      max-width:1100px;
+      margin:18px auto;
+      padding:0 14px 28px 14px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr;}
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.04);
+    }
+    .card h2{
+      margin:0 0 10px 0;
+      font-size:15px;
+      font-weight:700;
+    }
+    .note{
+      background:var(--soft);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 10px;
+      font-size:12.5px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+    .note strong{color:var(--text);}
+    .alert{
+      border-radius:10px;
+      padding:10px 10px;
+      font-size:12.5px;
+      line-height:1.4;
+      border:1px solid var(--border);
+      background:#fff;
+    }
+    .alert.red{
+      border-color: rgba(183,28,28,.35);
+      background: rgba(183,28,28,.06);
+    }
+    .alert.green{
+      border-color: rgba(15,118,110,.35);
+      background: rgba(15,118,110,.06);
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width: 650px){
+      .row{grid-template-columns:1fr;}
+    }
+    label{
+      display:block;
+      font-size:12.5px;
+      color:var(--muted);
+      margin:0 0 6px 0;
+    }
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 10px;
+      font-size:13.5px;
+      outline:none;
+      background:#fff;
+    }
+    textarea{min-height:120px; resize:vertical;}
+    .small{font-size:12px;}
+    .inline{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:8px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:#fff;
+      font-size:12.5px;
+      color:var(--text);
+    }
+    .btns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    button{
+      border:0;
+      border-radius:10px;
+      padding:10px 12px;
+      font-size:13.5px;
+      cursor:pointer;
+    }
+    .primary{
+      background:var(--primary);
+      color:#fff;
+    }
+    .secondary{
+      background:#111827;
+      color:#fff;
+    }
+    .ghost{
+      background:#fff;
+      border:1px solid var(--border);
+      color:var(--text);
+    }
+    .danger{
+      background:var(--accent);
+      color:#fff;
+    }
+    .status{
+      margin-top:10px;
+      font-size:12.5px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px;
+      white-space:pre-wrap;
+      background: #0b1220;
+      color: #e5e7eb;
+      border-radius:10px;
+      padding:10px;
+      border:1px solid rgba(255,255,255,.08);
+      overflow:auto;
+    }
+    .footer{
+      margin-top:12px;
+      font-size:11.5px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+    .lock{
+      position:fixed;
+      inset:0;
+      background:rgba(11,42,60,.78);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:999;
+    }
+    .lockcard{
+      width:min(520px, 100%);
+      background:#fff;
+      border-radius:14px;
+      padding:14px;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: 0 14px 40px rgba(0,0,0,.25);
+    }
+    .lockcard h2{margin:0 0 8px 0; font-size:16px;}
+    .lockcard p{margin:0 0 10px 0; font-size:12.5px; color:var(--muted); line-height:1.4;}
+  </style>
+</head>
+
+<body>
+  <div class="lock" id="lock">
+    <div class="lockcard">
+      <h2>Restricted Access</h2>
+      <p>
+        This page is for Authorised Representatives and Corporate Authorised Representatives of Titan Securities Pty Ltd.
+        Enter the shared password to continue.
+      </p>
+      <label for="pw">Password</label>
+      <input id="pw" type="password" placeholder="Enter password" autocomplete="current-password" />
+      <div class="btns">
+        <button class="primary" id="unlockBtn" type="button">Unlock</button>
+        <button class="ghost" id="clearBtn" type="button">Clear</button>
+      </div>
+      <div class="status" id="lockStatus"></div>
+      <div class="footer">
+        Note: This is a front end access gate only. Do not store confidential client documents on GitHub Pages.
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <h1>Titan Securities Pty Ltd – Deposit Direction Log</h1>
+    <p>
+      Purpose: This page creates a dated log entry whenever you direct a client to make a deposit or transfer funds.
+      Use this for supervision evidence and to allow Titan to confirm the bank details process was followed.
+      This does not replace your formal client file records.
+    </p>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section class="card">
+        <h2>Deposit Direction Form</h2>
+
+        <div class="alert red">
+          <strong>Important:</strong>
+          Always follow Titan’s bank details verification process.
+          If any bank details changed, or the client reports an unexpected payment request, stop and escalate immediately.
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="timestamp">Server Timestamp (auto)</label>
+            <input id="timestamp" type="text" readonly />
+            <div class="small" style="margin-top:6px;color:var(--muted);">
+              This timestamp is recorded on submission as well.
+            </div>
+          </div>
+          <div>
+            <label for="channel">Channel used to direct deposit</label>
+            <select id="channel">
+              <option value="Phone">Phone</option>
+              <option value="Email">Email</option>
+              <option value="Zoom">Zoom</option>
+              <option value="In Person">In Person</option>
+              <option value="SMS">SMS</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="repName">Rep Name</label>
+            <input id="repName" type="text" placeholder="Full name" />
+          </div>
+          <div>
+            <label for="repEmail">Rep Email</label>
+            <input id="repEmail" type="email" placeholder="name@domain.com" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="carName">CAR Name (if applicable)</label>
+            <input id="carName" type="text" placeholder="Corporate Authorised Representative name" />
+          </div>
+          <div>
+            <label for="clientRef">Client Name and Account Reference (optional)</label>
+            <input id="clientRef" type="text" placeholder="Client name and account reference if known" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="depositPurpose">Deposit purpose</label>
+            <select id="depositPurpose">
+              <option value="Account funding">Account funding</option>
+              <option value="Investment application">Investment application</option>
+              <option value="Initial deposit">Initial deposit</option>
+              <option value="Top up">Top up</option>
+              <option value="Margin or collateral">Margin or collateral</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="amount">Amount requested (AUD)</label>
+            <input id="amount" type="text" placeholder="Example: 50,000" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="payeeName">Payee name provided to client</label>
+            <input id="payeeName" type="text" placeholder="Exact payee name" />
+          </div>
+          <div>
+            <label for="accountType">Destination type</label>
+            <select id="accountType">
+              <option value="Titan bank account">Titan bank account</option>
+              <option value="Client own broker account">Client own broker account</option>
+              <option value="Issuer or registry account">Issuer or registry account</option>
+              <option value="Other third party">Other third party</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="bsb">BSB (if provided)</label>
+            <input id="bsb" type="text" placeholder="Example: 123-456" />
+          </div>
+          <div>
+            <label for="accountNumber">Account number (if provided)</label>
+            <input id="accountNumber" type="text" placeholder="Example: 12345678" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="reference">Payment reference provided to client</label>
+            <input id="reference" type="text" placeholder="Example: Client surname + account number" />
+          </div>
+          <div>
+            <label for="verification">Bank details verification completed</label>
+            <select id="verification">
+              <option value="Yes">Yes</option>
+              <option value="Partially">Partially</option>
+              <option value="No">No</option>
+              <option value="Not applicable">Not applicable</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="methodProvided">How were bank details provided</label>
+            <select id="methodProvided">
+              <option value="Titan official email domain">Titan official email domain</option>
+              <option value="Titan website / secure page">Titan website / secure page</option>
+              <option value="Phone read out to client">Phone read out to client</option>
+              <option value="In person">In person</option>
+              <option value="Third party document">Third party document</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="redFlags">Any red flags observed</label>
+            <select id="redFlags">
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+              <option value="Unsure">Unsure</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="details">Summary of what was said to client</label>
+          <textarea id="details" placeholder="Short factual summary. Include if the client was told to verify bank details. Include any warnings provided. Include who gave the bank details."></textarea>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="attachmentsNote">Attachments pending (what will you email to Titan)</label>
+            <input id="attachmentsNote" type="text" placeholder="Example: email chain. Example: signed application. Example: screenshot." />
+            <div class="small" style="margin-top:6px;color:var(--muted);">
+              After submission, email supporting material to Titan using your normal process.
+              Do not upload confidential files to GitHub Pages.
+            </div>
+          </div>
+          <div>
+            <label for="pageUrl">Page URL (auto)</label>
+            <input id="pageUrl" type="text" readonly />
+          </div>
+        </div>
+
+        <div class="inline">
+          <span class="chip"><strong>Consent:</strong> This submission creates an internal log entry for supervision evidence.</span>
+          <span class="chip"><strong>Security:</strong> Never accept bank detail changes without verified confirmation.</span>
+        </div>
+
+        <div class="btns">
+          <button class="primary" type="button" id="submitBtn">Submit and Log</button>
+          <button class="ghost" type="button" id="downloadBtn">Download JSON Copy</button>
+          <button class="secondary" type="button" id="copyEmailBtn">Copy Email Text</button>
+          <button class="danger" type="button" id="resetBtn">Reset Form</button>
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <div class="footer">
+          Note: Redact or amend any statement in this section if required.
+        </div>
+      </section>
+
+      <aside class="card">
+        <h2>Preview</h2>
+
+        <div class="note">
+          <strong>Central logging:</strong><br />
+          This page posts to Titan’s deposit direction log endpoint and appends a new row in Google Sheets.
+          A JSON copy is also downloaded as a backup evidence item.
+        </div>
+
+        <div style="margin-top:10px;" class="alert green">
+          <strong>What gets logged:</strong><br />
+          Timestamp, rep identity, CAR name, channel, deposit purpose, amount, payee, bank detail method, verification status, summary, and page URL.
+        </div>
+
+        <div style="margin-top:10px;">
+          <label>Payload Preview</label>
+          <div class="mono" id="preview">{}</div>
+        </div>
+
+        <div style="margin-top:10px;" class="note">
+          <strong>Email backup:</strong><br />
+          If logging is unavailable, use “Copy Email Text” and email the same details to Titan.
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    const SHARED_PASSWORD = "titan";
+
+    // Replace with your deployed Google Apps Script Web App URL for deposit logging
+    const LOG_ENDPOINT = "PASTE_YOUR_DEPOSITS_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+    const lock = document.getElementById("lock");
+    const pw = document.getElementById("pw");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const lockStatus = document.getElementById("lockStatus");
+
+    function unlock(){
+      const entered = (pw.value || "").trim();
+      if(entered === SHARED_PASSWORD){
+        lock.style.display = "none";
+        lockStatus.textContent = "";
+        localStorage.setItem("titan_deposits_unlocked", "1");
+      } else {
+        lockStatus.textContent = "Incorrect password.";
+      }
+    }
+
+    unlockBtn.addEventListener("click", unlock);
+    pw.addEventListener("keydown", (e) => { if(e.key === "Enter") unlock(); });
+    clearBtn.addEventListener("click", () => { pw.value = ""; lockStatus.textContent = ""; });
+
+    if(localStorage.getItem("titan_deposits_unlocked") === "1"){
+      lock.style.display = "none";
+    }
+
+    const el = (id) => document.getElementById(id);
+
+    const timestampEl = el("timestamp");
+    const channelEl = el("channel");
+    const repNameEl = el("repName");
+    const repEmailEl = el("repEmail");
+    const carNameEl = el("carName");
+    const clientRefEl = el("clientRef");
+
+    const depositPurposeEl = el("depositPurpose");
+    const amountEl = el("amount");
+    const payeeNameEl = el("payeeName");
+    const accountTypeEl = el("accountType");
+
+    const bsbEl = el("bsb");
+    const accountNumberEl = el("accountNumber");
+    const referenceEl = el("reference");
+
+    const verificationEl = el("verification");
+    const methodProvidedEl = el("methodProvided");
+    const redFlagsEl = el("redFlags");
+
+    const detailsEl = el("details");
+    const attachmentsNoteEl = el("attachmentsNote");
+    const pageUrlEl = el("pageUrl");
+
+    const statusEl = el("status");
+    const previewEl = el("preview");
+
+    const submitBtn = el("submitBtn");
+    const downloadBtn = el("downloadBtn");
+    const copyEmailBtn = el("copyEmailBtn");
+    const resetBtn = el("resetBtn");
+
+    function isoNow(){
+      return new Date().toISOString();
+    }
+
+    function setTimestamp(){
+      timestampEl.value = isoNow();
+    }
+
+    function buildPayload(){
+      return {
+        server_timestamp: isoNow(),
+
+        rep_name: (repNameEl.value || "").trim(),
+        rep_email: (repEmailEl.value || "").trim(),
+        car_name: (carNameEl.value || "").trim(),
+
+        channel: channelEl.value,
+        client_reference: (clientRefEl.value || "").trim(),
+
+        deposit_purpose: depositPurposeEl.value,
+        amount_aud: (amountEl.value || "").trim(),
+
+        payee_name: (payeeNameEl.value || "").trim(),
+        destination_type: accountTypeEl.value,
+
+        bsb: (bsbEl.value || "").trim(),
+        account_number: (accountNumberEl.value || "").trim(),
+        payment_reference: (referenceEl.value || "").trim(),
+
+        bank_details_verification_completed: verificationEl.value,
+        bank_details_provided_via: methodProvidedEl.value,
+        red_flags: redFlagsEl.value,
+
+        summary_of_direction: (detailsEl.value || "").trim(),
+        attachments_pending: (attachmentsNoteEl.value || "").trim(),
+
+        page_url: window.location.href,
+        user_agent: navigator.userAgent
+      };
+    }
+
+    function refreshPreview(){
+      const p = buildPayload();
+      previewEl.textContent = JSON.stringify(p, null, 2);
+    }
+
+    function downloadJSON(payload){
+      const file = `titan_deposit_direction_${new Date().toISOString().replaceAll(":","").replaceAll(".","")}.json`;
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = file;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function buildEmailText(payload){
+      const lines = [];
+      lines.push("Subject: Deposit direction logged – " + (payload.client_reference || "Client") + " – " + payload.amount_aud);
+      lines.push("");
+      lines.push("Hi Matthew,");
+      lines.push("");
+      lines.push("I am logging a deposit direction for central supervision records.");
+      lines.push("");
+      lines.push("Timestamp: " + payload.server_timestamp);
+      lines.push("Rep: " + payload.rep_name);
+      lines.push("Rep Email: " + payload.rep_email);
+      lines.push("CAR: " + (payload.car_name || "(none)"));
+      lines.push("Channel: " + payload.channel);
+      lines.push("Client ref: " + (payload.client_reference || ""));
+      lines.push("");
+      lines.push("Purpose: " + payload.deposit_purpose);
+      lines.push("Amount (AUD): " + (payload.amount_aud || ""));
+      lines.push("Payee name: " + (payload.payee_name || ""));
+      lines.push("Destination type: " + payload.destination_type);
+      lines.push("BSB: " + (payload.bsb || ""));
+      lines.push("Account number: " + (payload.account_number || ""));
+      lines.push("Payment reference: " + (payload.payment_reference || ""));
+      lines.push("");
+      lines.push("Verification completed: " + payload.bank_details_verification_completed);
+      lines.push("Details provided via: " + payload.bank_details_provided_via);
+      lines.push("Red flags: " + payload.red_flags);
+      lines.push("");
+      lines.push("Summary:");
+      lines.push(payload.summary_of_direction || "(not provided)");
+      lines.push("");
+      lines.push("Attachments pending: " + (payload.attachments_pending || "(none)"));
+      lines.push("");
+      lines.push("Page URL: " + payload.page_url);
+      lines.push("");
+      lines.push("Regards,");
+      lines.push(payload.rep_name || "Rep");
+      return lines.join("\n");
+    }
+
+    async function postToEndpoint(payload){
+      if(!LOG_ENDPOINT || LOG_ENDPOINT.includes("PASTE_YOUR_")){
+        return { ok:false, message:"LOG_ENDPOINT not configured." };
+      }
+
+      // GitHub Pages -> Apps Script: use no-cors for maximum compatibility
+      try{
+        await fetch(LOG_ENDPOINT, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        return { ok:true, message:"Submitted. Check the Google Sheet for a new row if you need confirmation." };
+      }catch(e){
+        return { ok:false, message:"Endpoint call failed." };
+      }
+    }
+
+    function validateMinimum(payload){
+      if(!payload.rep_name) return "Enter Rep Name.";
+      if(!payload.rep_email) return "Enter Rep Email.";
+      if(!payload.channel) return "Select Channel.";
+      if(!payload.deposit_purpose) return "Select Deposit purpose.";
+      if(!payload.amount_aud) return "Enter Amount requested.";
+      if(!payload.payee_name) return "Enter Payee name.";
+      if(payload.bank_details_verification_completed !== "Yes") return "Verification must be Yes before submission.";
+      if(!payload.summary_of_direction) return "Enter Summary of what was said to client.";
+      return "";
+    }
+
+    [
+      channelEl, repNameEl, repEmailEl, carNameEl, clientRefEl,
+      depositPurposeEl, amountEl, payeeNameEl, accountTypeEl,
+      bsbEl, accountNumberEl, referenceEl,
+      verificationEl, methodProvidedEl, redFlagsEl,
+      detailsEl, attachmentsNoteEl
+    ].forEach(x => x.addEventListener("input", refreshPreview));
+
+    submitBtn.addEventListener("click", async () => {
+      statusEl.textContent = "Submitting…";
+      statusEl.style.color = "#4b5563";
+
+      const payload = buildPayload();
+      const err = validateMinimum(payload);
+      refreshPreview();
+
+      if(err){
+        statusEl.textContent = err;
+        statusEl.style.color = "#b71c1c";
+        return;
+      }
+
+      downloadJSON(payload);
+
+      const result = await postToEndpoint(payload);
+      statusEl.textContent = result.ok
+        ? ("Submitted. " + result.message + " A JSON copy was downloaded for your records.")
+        : ("Submitted locally. " + result.message + " A JSON copy was downloaded for your records.");
+      statusEl.style.color = result.ok ? "#0f766e" : "#b45309";
+
+      setTimestamp();
+    });
+
+    downloadBtn.addEventListener("click", () => {
+      const payload = buildPayload();
+      refreshPreview();
+      downloadJSON(payload);
+      statusEl.textContent = "Downloaded JSON copy.";
+      statusEl.style.color = "#0f766e";
+    });
+
+    copyEmailBtn.addEventListener("click", async () => {
+      const payload = buildPayload();
+      refreshPreview();
+      const emailText = buildEmailText(payload);
+      try{
+        await navigator.clipboard.writeText(emailText);
+        statusEl.textContent = "Email text copied to clipboard.";
+        statusEl.style.color = "#0f766e";
+      }catch(e){
+        statusEl.textContent = "Clipboard blocked by browser. Copy from the preview panel.";
+        statusEl.style.color = "#b45309";
+        previewEl.textContent = emailText;
+      }
+    });
+
+    resetBtn.addEventListener("click", () => {
+      if(!confirm("Reset the form fields?")) return;
+
+      repNameEl.value = "";
+      repEmailEl.value = "";
+      carNameEl.value = "";
+      clientRefEl.value = "";
+
+      channelEl.value = "Phone";
+      depositPurposeEl.value = "Account funding";
+      amountEl.value = "";
+      payeeNameEl.value = "";
+      accountTypeEl.value = "Titan bank account";
+
+      bsbEl.value = "";
+      accountNumberEl.value = "";
+      referenceEl.value = "";
+
+      verificationEl.value = "Partially";
+      methodProvidedEl.value = "Titan official email domain";
+      redFlagsEl.value = "No";
+
+      detailsEl.value = "";
+      attachmentsNoteEl.value = "";
+
+      statusEl.textContent = "Form reset.";
+      statusEl.style.color = "#4b5563";
+      setTimestamp();
+      refreshPreview();
+    });
+
+    // Init
+    setTimestamp();
+    pageUrlEl.value = window.location.href;
+    refreshPreview();
+  </script>
+</body>
+</html>
