@@ -447,8 +447,8 @@
   <script>
     const SHARED_PASSWORD = "titan";
 
-    // Replace with your deployed Google Apps Script Web App URL for deposit logging
-    const LOG_ENDPOINT = "PASTE_YOUR_DEPOSITS_APPS_SCRIPT_WEB_APP_URL_HERE";
+    // Deployed Google Apps Script Web App URL for deposit logging
+    const LOG_ENDPOINT = "https://script.google.com/macros/s/AKfycbyGeHiSh-NV4NbD9JXFm8Lmx0vhx-R1loSRX2X0uGkn97i3IOPe645qJwGNOU1k2yOh/exec";
 
     const lock = document.getElementById("lock");
     const pw = document.getElementById("pw");
@@ -607,7 +607,7 @@
     }
 
     async function postToEndpoint(payload){
-      if(!LOG_ENDPOINT || LOG_ENDPOINT.includes("PASTE_YOUR_")){
+      if(!LOG_ENDPOINT){
         return { ok:false, message:"LOG_ENDPOINT not configured." };
       }
 
