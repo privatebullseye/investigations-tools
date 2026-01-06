@@ -254,6 +254,12 @@
           <strong>Email backup:</strong><br />
           If logging is unavailable, use “Copy Email Text” and email the same details to Titan.
         </div>
+
+        <div style="margin-top:10px;" class="note">
+          <strong>Deployment:</strong><br />
+          Version 3 (6 Jan 2026, 08:25)<br />
+          Deployment ID: <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;">AKfycbwdywIS0u8cXhjtWWwoogbdLxwKG-5DZoAeu4XXSb8hpMTBuS7p3qdnJKTpkNkbR2Ua</span>
+        </div>
       </aside>
     </div>
   </main>
@@ -261,8 +267,8 @@
   <script>
     const SHARED_PASSWORD = "titan";
 
-    // Your deployed Google Apps Script Web App URL (Version 2 you provided)
-    const LOG_ENDPOINT = "https://script.google.com/macros/s/AKfycbzPZoPyUK_Yqm4oDVjKeJOVjwHxOYJPcI21xopm-C1LMHzmE2fIBxRQmlW5mlMRBMP6/exec";
+    // ✅ UPDATED Web App URL (Version 3)
+    const LOG_ENDPOINT = "https://script.google.com/macros/s/AKfycbwdywIS0u8cXhjtWWwoogbdLxwKG-5DZoAeu4XXSb8hpMTBuS7p3qdnJKTpkNkbR2Ua/exec";
 
     const lock = document.getElementById("lock");
     const pw = document.getElementById("pw");
@@ -330,10 +336,6 @@
     }
 
     function buildPayload(){
-      // PREVIOUS WORKING STYLE:
-      // - No server-side password/consent in the payload
-      // - Content-Type: text/plain;charset=utf-8
-      // - mode: no-cors
       return {
         server_timestamp: isoNow(),
 
@@ -365,8 +367,7 @@
     }
 
     function refreshPreview(){
-      const p = buildPayload();
-      previewEl.textContent = JSON.stringify(p, null, 2);
+      previewEl.textContent = JSON.stringify(buildPayload(), null, 2);
     }
 
     function downloadJSON(payload){
@@ -425,6 +426,9 @@
         return { ok:false, message:"LOG_ENDPOINT not configured." };
       }
 
+      // Same as your working advertising form pattern:
+      // - mode: no-cors
+      // - Content-Type: text/plain;charset=utf-8
       try{
         await fetch(LOG_ENDPOINT, {
           method: "POST",
