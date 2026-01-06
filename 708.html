@@ -208,10 +208,29 @@
     }
     .lockcard h2{margin:0 0 8px 0; font-size:16px;}
     .lockcard p{margin:0 0 10px 0; font-size:12.5px; color:var(--muted); line-height:1.4;}
+
+    /* Small checkbox row like your working page */
+    .softbox{
+      margin-top:10px;
+      background:var(--soft);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px;
+    }
+    .checkrow{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .checkrow input{
+      width:auto;
+      margin-top:3px;
+    }
   </style>
 </head>
 
 <body>
+  <!-- Front-end access gate only -->
   <div class="lock" id="lock">
     <div class="lockcard">
       <h2>Restricted Access</h2>
@@ -219,8 +238,8 @@
         This page is for Authorised Representatives and Corporate Authorised Representatives of Titan Securities Pty Ltd.
         Enter the shared password to continue.
       </p>
-      <label for="pw">Password</label>
-      <input id="pw" type="password" placeholder="Enter password" autocomplete="current-password" />
+      <label for="pwGate">Password</label>
+      <input id="pwGate" type="password" placeholder="Enter password" autocomplete="current-password" />
       <div class="btns">
         <button class="primary" id="unlockBtn" type="button">Unlock</button>
         <button class="ghost" id="clearBtn" type="button">Clear</button>
@@ -260,6 +279,7 @@
               This timestamp is recorded on submission as well.
             </div>
           </div>
+
           <div>
             <label for="pathway">Wholesale pathway relied on</label>
             <select id="pathway">
@@ -367,9 +387,27 @@
           <textarea id="notes" placeholder="Short factual notes. Missing paperwork. Follow ups. Risk flags."></textarea>
         </div>
 
-        <div class="inline">
-          <span class="chip"><strong>Consent:</strong> This submission creates an internal log entry for supervision evidence.</span>
+        <!-- IMPORTANT: this is what your WORKING logger requires (consent + password) -->
+        <div class="softbox">
+          <div class="checkrow">
+            <input id="consentChk" type="checkbox" />
+            <div class="small" style="color:var(--muted); line-height:1.4;">
+              I confirm this submission is for internal supervision logging purposes, and I consent to the information being recorded in Titan’s central s708 log.
+            </div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <label for="submitPassword">Submission password (required)</label>
+            <input id="submitPassword" type="password" placeholder="Required to submit" autocomplete="off" />
+            <div class="small" style="margin-top:6px;color:var(--muted);">
+              This is checked server-side by the Google Apps Script endpoint.
+            </div>
+          </div>
+        </div>
+
+        <div class="inline" style="margin-top:10px;">
           <span class="chip"><strong>Retention:</strong> Keep your local records as usual.</span>
+          <span class="chip"><strong>Backup:</strong> JSON copy downloads on submit.</span>
         </div>
 
         <div class="btns">
@@ -406,27 +444,29 @@
         </div>
 
         <div style="margin-top:10px;" class="note">
-          <strong>Email backup:</strong><br />
-          If logging is unavailable, use “Copy Email Text” and email the same details to Titan.
+          <strong>Submission note:</strong><br />
+          From GitHub Pages, the browser may not allow reading the response (CORS). The Sheet row is the source of truth.
         </div>
       </aside>
     </div>
   </main>
 
   <script>
+    // Front-end gate only (not the server password)
     const SHARED_PASSWORD = "titan";
 
-    // ✅ Your NEW deployed Google Apps Script Web App URL (Version 2)
+    // Your deployed Google Apps Script Web App URL (Version 2)
     const LOG_ENDPOINT = "https://script.google.com/macros/s/AKfycbzPZoPyUK_Yqm4oDVjKeJOVjwHxOYJPcI21xopm-C1LMHzmE2fIBxRQmlW5mlMRBMP6/exec";
 
+    // Gate elements
     const lock = document.getElementById("lock");
-    const pw = document.getElementById("pw");
+    const pwGate = document.getElementById("pwGate");
     const unlockBtn = document.getElementById("unlockBtn");
     const clearBtn = document.getElementById("clearBtn");
     const lockStatus = document.getElementById("lockStatus");
 
     function unlock(){
-      const entered = (pw.value || "").trim();
+      const entered = (pwGate.value || "").trim();
       if(entered === SHARED_PASSWORD){
         lock.style.display = "none";
         lockStatus.textContent = "";
@@ -437,8 +477,8 @@
     }
 
     unlockBtn.addEventListener("click", unlock);
-    pw.addEventListener("keydown", (e) => { if(e.key === "Enter") unlock(); });
-    clearBtn.addEventListener("click", () => { pw.value = ""; lockStatus.textContent = ""; });
+    pwGate.addEventListener("keydown", (e) => { if(e.key === "Enter") unlock(); });
+    clearBtn.addEventListener("click", () => { pwGate.value = ""; lockStatus.textContent = ""; });
 
     if(localStorage.getItem("titan_708_unlocked") === "1"){
       lock.style.display = "none";
@@ -468,6 +508,9 @@
     const evidenceRefEl = el("evidenceRef");
     const notesEl = el("notes");
 
+    const consentChkEl = el("consentChk");
+    const submitPasswordEl = el("submitPassword");
+
     const statusEl = el("status");
     const previewEl = el("preview");
 
@@ -484,40 +527,60 @@
       timestampEl.value = isoNow();
     }
 
-    function buildPayload(){
+    async function getPublicIP(){
+      try{
+        const r = await fetch("https://api.ipify.org?format=json",{cache:"no-store"});
+        const j = await r.json();
+        return (j && j.ip) ? j.ip : "Unavailable";
+      }catch{
+        return "Unavailable";
+      }
+    }
+
+    // IMPORTANT FIXES (based on your working Advertising page):
+    // - Use camelCase keys
+    // - Include password + consent
+    // - POST as text/plain;charset=utf-8
+    async function buildPayload(){
       return {
-        server_timestamp: isoNow(),
+        consent: consentChkEl.checked === true,
+        password: (submitPasswordEl.value || "").trim(),
 
-        rep_name: (repNameEl.value || "").trim(),
-        rep_email: (repEmailEl.value || "").trim(),
-        car_name: (carNameEl.value || "").trim(),
-
+        serverTimestamp: isoNow(),
         pathway: pathwayEl.value,
         stage: stageEl.value,
 
-        investor_name: (investorNameEl.value || "").trim(),
-        investor_entity: (investorEntityEl.value || "").trim(),
-        investor_email: (investorEmailEl.value || "").trim(),
-        investor_phone: (investorPhoneEl.value || "").trim(),
+        repName: (repNameEl.value || "").trim(),
+        repEmail: (repEmailEl.value || "").trim(),
+        carName: (carNameEl.value || "").trim(),
 
-        offer_product: (offerProductEl.value || "").trim(),
-        amount_aud: (amountEl.value || "").trim(),
+        investorName: (investorNameEl.value || "").trim(),
+        investorEntity: (investorEntityEl.value || "").trim(),
+        investorEmail: (investorEmailEl.value || "").trim(),
+        investorPhone: (investorPhoneEl.value || "").trim(),
 
-        accountant_certificate_date: (certDateEl.value || "").trim(),
-        accountant_name_or_firm: (accountantEl.value || "").trim(),
+        offerProduct: (offerProductEl.value || "").trim(),
+        amountAud: (amountEl.value || "").trim(),
 
-        wholesale_confirmed: wholesaleConfirmedEl.value,
-        evidence_reference: (evidenceRefEl.value || "").trim(),
+        accountantCertificateDate: (certDateEl.value || "").trim(),
+        accountantNameOrFirm: (accountantEl.value || "").trim(),
+
+        wholesaleConfirmed: wholesaleConfirmedEl.value,
+        evidenceRef: (evidenceRefEl.value || "").trim(),
         notes: (notesEl.value || "").trim(),
 
-        page_url: window.location.href,
-        user_agent: navigator.userAgent
+        publicIP: await getPublicIP(),
+        pageUrl: window.location.href,
+        userAgent: navigator.userAgent,
+
+        deploymentVersion: "Version 2",
+        deploymentDateTime: "6 Jan 2026, 07:50",
+        deploymentId: "AKfycbzPZoPyUK_Yqm4oDVjKeJOVjwHxOYJPcI21xopm-C1LMHzmE2fIBxRQmlW5mlMRBMP6"
       };
     }
 
-    function refreshPreview(){
-      const p = buildPayload();
-      previewEl.textContent = JSON.stringify(p, null, 2);
+    function refreshPreviewFromPayload(payload){
+      previewEl.textContent = JSON.stringify(payload, null, 2);
     }
 
     function downloadJSON(payload){
@@ -534,47 +597,43 @@
 
     function buildEmailText(payload){
       const lines = [];
-      lines.push("Subject: s708 investor logged – " + (payload.investor_name || "Investor") + " – " + payload.pathway);
+      lines.push("Subject: s708 investor logged – " + (payload.investorName || "Investor") + " – " + payload.pathway);
       lines.push("");
       lines.push("Hi Matthew,");
       lines.push("");
       lines.push("I am logging an s708 / wholesale investor interaction for supervision verification.");
       lines.push("");
-      lines.push("Timestamp: " + payload.server_timestamp);
-      lines.push("Rep: " + payload.rep_name);
-      lines.push("Rep Email: " + payload.rep_email);
-      lines.push("CAR: " + (payload.car_name || "(none)"));
+      lines.push("Timestamp: " + payload.serverTimestamp);
+      lines.push("Rep: " + payload.repName);
+      lines.push("Rep Email: " + payload.repEmail);
+      lines.push("CAR: " + (payload.carName || "(none)"));
       lines.push("Pathway: " + payload.pathway);
       lines.push("Stage: " + payload.stage);
       lines.push("");
-      lines.push("Investor: " + (payload.investor_name || ""));
-      lines.push("Entity: " + (payload.investor_entity || ""));
-      lines.push("Email: " + (payload.investor_email || ""));
-      lines.push("Phone: " + (payload.investor_phone || ""));
+      lines.push("Investor: " + (payload.investorName || ""));
+      lines.push("Entity: " + (payload.investorEntity || ""));
+      lines.push("Email: " + (payload.investorEmail || ""));
+      lines.push("Phone: " + (payload.investorPhone || ""));
       lines.push("");
-      lines.push("Offer / Product: " + (payload.offer_product || ""));
-      lines.push("Amount (AUD): " + (payload.amount_aud || ""));
+      lines.push("Offer / Product: " + (payload.offerProduct || ""));
+      lines.push("Amount (AUD): " + (payload.amountAud || ""));
       lines.push("");
-      lines.push("Accountant cert date: " + (payload.accountant_certificate_date || ""));
-      lines.push("Accountant: " + (payload.accountant_name_or_firm || ""));
+      lines.push("Accountant cert date: " + (payload.accountantCertificateDate || ""));
+      lines.push("Accountant: " + (payload.accountantNameOrFirm || ""));
       lines.push("");
-      lines.push("Wholesale confirmed: " + payload.wholesale_confirmed);
-      lines.push("Evidence reference: " + (payload.evidence_reference || ""));
+      lines.push("Wholesale confirmed: " + payload.wholesaleConfirmed);
+      lines.push("Evidence reference: " + (payload.evidenceRef || ""));
       lines.push("");
       lines.push("Notes:");
       lines.push(payload.notes || "(not provided)");
       lines.push("");
-      lines.push("Page URL: " + payload.page_url);
+      lines.push("Page URL: " + payload.pageUrl);
       lines.push("");
       lines.push("Regards,");
-      lines.push(payload.rep_name || "Rep");
+      lines.push(payload.repName || "Rep");
       return lines.join("\n");
     }
 
-    // IMPORTANT:
-    // From GitHub Pages you may not be able to read the response (CORS).
-    // This still logs to the Sheet if the Web App is deployed as:
-    // Execute as: Me   |   Who has access: Anyone
     async function postToEndpoint(payload){
       if(!LOG_ENDPOINT){
         return { ok:false, message:"LOG_ENDPOINT not configured." };
@@ -584,39 +643,90 @@
         await fetch(LOG_ENDPOINT, {
           method: "POST",
           mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
         });
-        return { ok:true, message:"Submitted. Check the Google Sheet for a new row if you need confirmation." };
+        return { ok:true, message:"Submitted. Check the Google Sheet for the new row if you need confirmation." };
       }catch(e){
         return { ok:false, message:"Endpoint call failed." };
       }
     }
 
     function validateMinimum(payload){
-      if(!payload.rep_name) return "Enter Rep Name.";
-      if(!payload.rep_email) return "Enter Rep Email.";
-      if(!payload.investor_name) return "Enter Investor Name.";
-      if(!payload.evidence_reference) return "Enter Evidence reference.";
-      if(payload.wholesale_confirmed !== "Yes") return "Wholesale must be confirmed as Yes before submission.";
+      if(!payload.repName) return "Enter Rep Name.";
+      if(!payload.repEmail) return "Enter Rep Email.";
+      if(!payload.investorName) return "Enter Investor Name.";
+      if(!payload.evidenceRef) return "Enter Evidence reference.";
+      if(payload.wholesaleConfirmed !== "Yes") return "Wholesale must be confirmed as Yes before submission.";
+      if(!payload.password) return "Submission password is required.";
+      if(payload.consent !== true) return "Consent must be confirmed.";
       return "";
+    }
+
+    async function refreshPreview(){
+      const payload = await buildPayload();
+      refreshPreviewFromPayload(payload);
+    }
+
+    // Preview updates (lightweight: refresh without IP each keystroke would spam ipify)
+    // So we refresh preview locally without public IP, then refresh full preview on submit / download.
+    function buildPayloadNoIP(){
+      return {
+        consent: consentChkEl.checked === true,
+        password: (submitPasswordEl.value || "").trim(),
+
+        serverTimestamp: isoNow(),
+        pathway: pathwayEl.value,
+        stage: stageEl.value,
+
+        repName: (repNameEl.value || "").trim(),
+        repEmail: (repEmailEl.value || "").trim(),
+        carName: (carNameEl.value || "").trim(),
+
+        investorName: (investorNameEl.value || "").trim(),
+        investorEntity: (investorEntityEl.value || "").trim(),
+        investorEmail: (investorEmailEl.value || "").trim(),
+        investorPhone: (investorPhoneEl.value || "").trim(),
+
+        offerProduct: (offerProductEl.value || "").trim(),
+        amountAud: (amountEl.value || "").trim(),
+
+        accountantCertificateDate: (certDateEl.value || "").trim(),
+        accountantNameOrFirm: (accountantEl.value || "").trim(),
+
+        wholesaleConfirmed: wholesaleConfirmedEl.value,
+        evidenceRef: (evidenceRefEl.value || "").trim(),
+        notes: (notesEl.value || "").trim(),
+
+        publicIP: "(captured on submit)",
+        pageUrl: window.location.href,
+        userAgent: navigator.userAgent,
+
+        deploymentVersion: "Version 2",
+        deploymentDateTime: "6 Jan 2026, 07:50",
+        deploymentId: "AKfycbzPZoPyUK_Yqm4oDVjKeJOVjwHxOYJPcI21xopm-C1LMHzmE2fIBxRQmlW5mlMRBMP6"
+      };
+    }
+
+    function refreshPreviewLite(){
+      previewEl.textContent = JSON.stringify(buildPayloadNoIP(), null, 2);
     }
 
     [
       pathwayEl, repNameEl, repEmailEl, carNameEl, stageEl,
       investorNameEl, investorEntityEl, investorEmailEl, investorPhoneEl,
       offerProductEl, amountEl, certDateEl, accountantEl,
-      wholesaleConfirmedEl, evidenceRefEl, notesEl
-    ].forEach(x => x.addEventListener("input", refreshPreview));
+      wholesaleConfirmedEl, evidenceRefEl, notesEl, consentChkEl, submitPasswordEl
+    ].forEach(x => x.addEventListener("input", refreshPreviewLite));
 
     submitBtn.addEventListener("click", async () => {
       statusEl.textContent = "Submitting…";
       statusEl.style.color = "#4b5563";
 
-      const payload = buildPayload();
-      const err = validateMinimum(payload);
-      refreshPreview();
+      const payload = await buildPayload();
+      refreshPreviewFromPayload(payload);
 
+      const err = validateMinimum(payload);
       if(err){
         statusEl.textContent = err;
         statusEl.style.color = "#b71c1c";
@@ -628,23 +738,23 @@
       const result = await postToEndpoint(payload);
       statusEl.textContent = result.ok
         ? ("Submitted. " + result.message + " A JSON copy was downloaded for your records.")
-        : ("Submitted locally. " + result.message + " A JSON copy was downloaded for your records.");
+        : ("Submission attempted. " + result.message + " A JSON copy was downloaded for your records.");
       statusEl.style.color = result.ok ? "#0f766e" : "#b45309";
 
       setTimestamp();
     });
 
-    downloadBtn.addEventListener("click", () => {
-      const payload = buildPayload();
-      refreshPreview();
+    downloadBtn.addEventListener("click", async () => {
+      const payload = await buildPayload();
+      refreshPreviewFromPayload(payload);
       downloadJSON(payload);
       statusEl.textContent = "Downloaded JSON copy.";
       statusEl.style.color = "#0f766e";
     });
 
     copyEmailBtn.addEventListener("click", async () => {
-      const payload = buildPayload();
-      refreshPreview();
+      const payload = await buildPayload();
+      refreshPreviewFromPayload(payload);
       const emailText = buildEmailText(payload);
       try{
         await navigator.clipboard.writeText(emailText);
@@ -681,15 +791,18 @@
       evidenceRefEl.value = "";
       notesEl.value = "";
 
+      consentChkEl.checked = false;
+      submitPasswordEl.value = "";
+
       statusEl.textContent = "Form reset.";
       statusEl.style.color = "#4b5563";
       setTimestamp();
-      refreshPreview();
+      refreshPreviewLite();
     });
 
     // Init
     setTimestamp();
-    refreshPreview();
+    refreshPreviewLite();
   </script>
 </body>
 </html>
