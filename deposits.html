@@ -440,6 +440,12 @@
           <strong>Email backup:</strong><br />
           If logging is unavailable, use “Copy Email Text” and email the same details to Titan.
         </div>
+
+        <div style="margin-top:10px;" class="note" id="deployMeta">
+          <strong>Deployment:</strong><br />
+          <span class="small">Version 1 (10 Jan 2026)</span><br />
+          <span class="small">Deployment ID: <span class="mono" style="display:block;margin-top:8px;background:#0b1220;">AKfycbyTYYrdKx_PPE2g5vcA2kyC-WJRFgdnbDw5czMyqTlLEbWekLK-Z01Q389nVvpbFQvC</span></span>
+        </div>
       </aside>
     </div>
   </main>
@@ -447,8 +453,14 @@
   <script>
     const SHARED_PASSWORD = "titan";
 
-    // Deployed Google Apps Script Web App URL for deposit logging
-    const LOG_ENDPOINT = "https://script.google.com/macros/s/AKfycbyGeHiSh-NV4NbD9JXFm8Lmx0vhx-R1loSRX2X0uGkn97i3IOPe645qJwGNOU1k2yOh/exec";
+    // UPDATED: latest Apps Script Web App URL you last provided
+    const LOG_ENDPOINT =
+      "https://script.google.com/macros/s/AKfycbyTYYrdKx_PPE2g5vcA2kyC-WJRFgdnbDw5czMyqTlLEbWekLK-Z01Q389nVvpbFQvC/exec";
+
+    // Optional: keep these in payload for audit traceability
+    const DEPLOYMENT_VERSION = "Version 1";
+    const DEPLOYMENT_DATE_TIME = "10 Jan 2026";
+    const DEPLOYMENT_ID = "AKfycbyTYYrdKx_PPE2g5vcA2kyC-WJRFgdnbDw5czMyqTlLEbWekLK-Z01Q389nVvpbFQvC";
 
     const lock = document.getElementById("lock");
     const pw = document.getElementById("pw");
@@ -546,7 +558,11 @@
         attachments_pending: (attachmentsNoteEl.value || "").trim(),
 
         page_url: window.location.href,
-        user_agent: navigator.userAgent
+        user_agent: navigator.userAgent,
+
+        deployment_version: DEPLOYMENT_VERSION,
+        deployment_date_time: DEPLOYMENT_DATE_TIME,
+        deployment_id: DEPLOYMENT_ID
       };
     }
 
@@ -569,7 +585,7 @@
 
     function buildEmailText(payload){
       const lines = [];
-      lines.push("Subject: Deposit direction logged – " + (payload.client_reference || "Client") + " – " + payload.amount_aud);
+      lines.push("Subject: Deposit direction logged – " + (payload.client_reference || "Client") + " – " + (payload.amount_aud || ""));
       lines.push("");
       lines.push("Hi Matthew,");
       lines.push("");
@@ -600,6 +616,9 @@
       lines.push("Attachments pending: " + (payload.attachments_pending || "(none)"));
       lines.push("");
       lines.push("Page URL: " + payload.page_url);
+      lines.push("");
+      lines.push("Deployment: " + payload.deployment_version + " – " + payload.deployment_date_time);
+      lines.push("Deployment ID: " + payload.deployment_id);
       lines.push("");
       lines.push("Regards,");
       lines.push(payload.rep_name || "Rep");
