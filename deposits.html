@@ -93,7 +93,7 @@
       background: rgba(15,118,110,.06);
     }
 
-    /* ---- Cosmetic alignment improvements ---- */
+    /* ---- Alignment improvements ---- */
     .row{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -101,23 +101,29 @@
       margin-top:10px;
       align-items:start;
     }
-    .row > div{
-      display:flex;
-      flex-direction:column;
-      gap:6px; /* consistent spacing between label/control/help */
-      min-width:0;
-    }
     @media (max-width: 650px){
       .row{grid-template-columns:1fr;}
     }
+
+    /* each field cell uses a fixed 3-row layout: label + control + help */
+    .field{
+      display:grid;
+      grid-template-rows: 18px 42px 18px; /* consistent heights */
+      gap:6px;
+      min-width:0;
+    }
+
     label{
-      display:block;
       font-size:12.5px;
       color:var(--muted);
-      margin:0;
       line-height:1.2;
-      min-height: 15px; /* keeps labels visually aligned */
+      margin:0;
+      display:block;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
+
     input, select, textarea{
       width:100%;
       border:1px solid var(--border);
@@ -127,29 +133,34 @@
       outline:none;
       background:#fff;
     }
-    /* consistent control height so fields line up neatly */
+
     input:not([type="checkbox"]):not([type="radio"]),
     select{
       height:42px;
       padding-top:9px;
       padding-bottom:9px;
     }
+
     textarea{
       min-height:120px;
       resize:vertical;
       padding:10px;
     }
-    /* subtle focus state */
+
     input:focus, select:focus, textarea:focus{
       border-color: rgba(11,42,60,.55);
       box-shadow: 0 0 0 3px rgba(11,42,60,.10);
     }
 
-    .small{
+    .help{
       font-size:12px;
       color:var(--muted);
       line-height:1.35;
-      margin:0; /* remove ad-hoc margins so rows stay tidy */
+      margin:0;
+      display:block;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
     .inline{
@@ -183,23 +194,11 @@
       font-size:13.5px;
       cursor:pointer;
     }
-    .primary{
-      background:var(--primary);
-      color:#fff;
-    }
-    .secondary{
-      background:#111827;
-      color:#fff;
-    }
-    .ghost{
-      background:#fff;
-      border:1px solid var(--border);
-      color:var(--text);
-    }
-    .danger{
-      background:var(--accent);
-      color:#fff;
-    }
+    .primary{ background:var(--primary); color:#fff; }
+    .secondary{ background:#111827; color:#fff; }
+    .ghost{ background:#fff; border:1px solid var(--border); color:var(--text); }
+    .danger{ background:var(--accent); color:#fff; }
+
     .status{
       margin-top:10px;
       font-size:12.5px;
@@ -270,9 +269,8 @@
   <header>
     <h1>Titan Securities Pty Ltd – Deposit Direction Log</h1>
     <p>
-      Purpose: This page creates a dated log entry whenever you direct a client to make a deposit or transfer funds.
-      Use this for supervision evidence and to allow Titan to confirm the bank details process was followed.
-      This does not replace your formal client file records.
+      Purpose: Log each time you direct a client to deposit or transfer funds. Use for supervision evidence.
+      This does not replace client file records.
     </p>
   </header>
 
@@ -283,20 +281,17 @@
 
         <div class="alert red">
           <strong>Important:</strong>
-          Always follow Titan’s bank details verification process.
-          If any bank details changed, or the client reports an unexpected payment request, stop and escalate immediately.
+          Follow Titan’s bank detail verification process. If details change or a request looks unusual, stop and escalate.
         </div>
 
         <div class="row">
-          <div>
-            <label for="timestamp">Server Timestamp (auto)</label>
+          <div class="field">
+            <label for="timestamp">Timestamp (auto)</label>
             <input id="timestamp" type="text" readonly />
-            <div class="small">
-              This timestamp is recorded on submission as well.
-            </div>
+            <div class="help">Recorded on submit.</div>
           </div>
-          <div>
-            <label for="channel">Channel used to direct deposit</label>
+          <div class="field">
+            <label for="channel">Channel</label>
             <select id="channel">
               <option value="Phone">Phone</option>
               <option value="Email">Email</option>
@@ -305,35 +300,39 @@
               <option value="SMS">SMS</option>
               <option value="Other">Other</option>
             </select>
-            <div class="small">&nbsp;</div>
+            <div class="help">&nbsp;</div>
           </div>
         </div>
 
         <div class="row">
-          <div>
-            <label for="repName">Rep Name</label>
+          <div class="field">
+            <label for="repName">Rep name</label>
             <input id="repName" type="text" placeholder="Full name" />
+            <div class="help">&nbsp;</div>
           </div>
-          <div>
-            <label for="repEmail">Rep Email</label>
+          <div class="field">
+            <label for="repEmail">Rep email</label>
             <input id="repEmail" type="email" placeholder="name@domain.com" />
+            <div class="help">&nbsp;</div>
           </div>
         </div>
 
         <div class="row">
-          <div>
-            <label for="carName">CAR Name (if applicable)</label>
-            <input id="carName" type="text" placeholder="Corporate Authorised Representative name" />
+          <div class="field">
+            <label for="carName">CAR (optional)</label>
+            <input id="carName" type="text" placeholder="CAR name" />
+            <div class="help">&nbsp;</div>
           </div>
-          <div>
-            <label for="clientRef">Client Name and Account Reference (optional)</label>
-            <input id="clientRef" type="text" placeholder="Client name and account reference if known" />
+          <div class="field">
+            <label for="clientRef">Client ref (optional)</label>
+            <input id="clientRef" type="text" placeholder="Client name / ref" />
+            <div class="help">&nbsp;</div>
           </div>
         </div>
 
         <div class="row">
-          <div>
-            <label for="depositPurpose">Deposit purpose</label>
+          <div class="field">
+            <label for="depositPurpose">Purpose</label>
             <select id="depositPurpose">
               <option value="Account funding">Account funding</option>
               <option value="Investment application">Investment application</option>
@@ -342,19 +341,22 @@
               <option value="Margin or collateral">Margin or collateral</option>
               <option value="Other">Other</option>
             </select>
+            <div class="help">&nbsp;</div>
           </div>
-          <div>
-            <label for="amount">Amount requested (AUD)</label>
-            <input id="amount" type="text" placeholder="Example: 50,000" />
+          <div class="field">
+            <label for="amount">Amount (AUD)</label>
+            <input id="amount" type="text" placeholder="e.g., 50,000" />
+            <div class="help">&nbsp;</div>
           </div>
         </div>
 
         <div class="row">
-          <div>
-            <label for="payeeName">Payee name provided to client</label>
-            <input id="payeeName" type="text" placeholder="Exact payee name" />
+          <div class="field">
+            <label for="payeeName">Payee name</label>
+            <input id="payeeName" type="text" placeholder="Exact payee" />
+            <div class="help">&nbsp;</div>
           </div>
-          <div>
+          <div class="field">
             <label for="accountType">Destination type</label>
             <select id="accountType">
               <option value="Titan bank account">Titan bank account</option>
@@ -362,39 +364,44 @@
               <option value="Issuer or registry account">Issuer or registry account</option>
               <option value="Other third party">Other third party</option>
             </select>
+            <div class="help">&nbsp;</div>
           </div>
         </div>
 
         <div class="row">
-          <div>
-            <label for="bsb">BSB (if provided)</label>
-            <input id="bsb" type="text" placeholder="Example: 123-456" />
+          <div class="field">
+            <label for="bsb">BSB (optional)</label>
+            <input id="bsb" type="text" placeholder="e.g., 123-456" />
+            <div class="help">&nbsp;</div>
           </div>
-          <div>
-            <label for="accountNumber">Account number (if provided)</label>
-            <input id="accountNumber" type="text" placeholder="Example: 12345678" />
+          <div class="field">
+            <label for="accountNumber">Account no. (optional)</label>
+            <input id="accountNumber" type="text" placeholder="e.g., 12345678" />
+            <div class="help">&nbsp;</div>
           </div>
         </div>
 
         <div class="row">
-          <div>
-            <label for="reference">Payment reference provided to client</label>
-            <input id="reference" type="text" placeholder="Example: Client surname + account number" />
+          <div class="field">
+            <label for="reference">Payment reference</label>
+            <input id="reference" type="text" placeholder="e.g., surname + ref" />
+            <div class="help">&nbsp;</div>
           </div>
-          <div>
-            <label for="verification">Bank details verification completed</label>
+          <div class="field">
+            <label for="verification">Verified</label>
             <select id="verification">
               <option value="Yes">Yes</option>
               <option value="Partially">Partially</option>
               <option value="No">No</option>
               <option value="Not applicable">Not applicable</option>
             </select>
+            <div class="help">Must be “Yes”.</div>
           </div>
         </div>
 
         <div class="row">
-          <div>
-            <label for="methodProvided">How were bank details provided</label>
+          <div class="field">
+            <label for="methodProvided">Details provided via</label>
             <select id="methodProvided">
               <option value="Titan official email domain">Titan official email domain</option>
               <option value="Titan website / secure page">Titan website / secure page</option>
@@ -403,41 +410,40 @@
               <option value="Third party document">Third party document</option>
               <option value="Other">Other</option>
             </select>
+            <div class="help">&nbsp;</div>
           </div>
-          <div>
-            <label for="redFlags">Any red flags observed</label>
+          <div class="field">
+            <label for="redFlags">Red flags</label>
             <select id="redFlags">
               <option value="No">No</option>
               <option value="Yes">Yes</option>
               <option value="Unsure">Unsure</option>
             </select>
+            <div class="help">&nbsp;</div>
           </div>
         </div>
 
         <div style="margin-top:10px;">
-          <label for="details">Summary of what was said to client</label>
-          <textarea id="details" placeholder="Short factual summary. Include if the client was told to verify bank details. Include any warnings provided. Include who gave the bank details."></textarea>
+          <label for="details">Summary</label>
+          <textarea id="details" placeholder="Short factual summary. Include any warnings and who provided details."></textarea>
         </div>
 
         <div class="row">
-          <div>
-            <label for="attachmentsNote">Attachments pending (what will you email to Titan)</label>
-            <input id="attachmentsNote" type="text" placeholder="Example: email chain. Example: signed application. Example: screenshot." />
-            <div class="small">
-              After submission, email supporting material to Titan using your normal process.
-              Do not upload confidential files to GitHub Pages.
-            </div>
+          <div class="field">
+            <label for="attachmentsNote">Attachments pending</label>
+            <input id="attachmentsNote" type="text" placeholder="e.g., email chain / screenshot" />
+            <div class="help">Email to Titan after submit.</div>
           </div>
-          <div>
+          <div class="field">
             <label for="pageUrl">Page URL (auto)</label>
             <input id="pageUrl" type="text" readonly />
-            <div class="small">&nbsp;</div>
+            <div class="help">&nbsp;</div>
           </div>
         </div>
 
         <div class="inline">
-          <span class="chip"><strong>Consent:</strong> This submission creates an internal log entry for supervision evidence.</span>
-          <span class="chip"><strong>Security:</strong> Never accept bank detail changes without verified confirmation.</span>
+          <span class="chip"><strong>Consent:</strong> Creates an internal log entry.</span>
+          <span class="chip"><strong>Security:</strong> Do not accept unverified changes.</span>
         </div>
 
         <div class="btns">
@@ -459,13 +465,12 @@
 
         <div class="note">
           <strong>Central logging:</strong><br />
-          This page posts to Titan’s deposit direction log endpoint and appends a new row in Google Sheets.
-          A JSON copy is also downloaded as a backup evidence item.
+          Posts to Titan’s endpoint and appends a row in Google Sheets. A JSON copy is also downloaded.
         </div>
 
         <div style="margin-top:10px;" class="alert green">
-          <strong>What gets logged:</strong><br />
-          Timestamp, rep identity, CAR name, channel, deposit purpose, amount, payee, bank detail method, verification status, summary, and page URL.
+          <strong>Logged fields:</strong><br />
+          Timestamp, rep/CAR, channel, purpose, amount, payee, method, verification, summary, URL.
         </div>
 
         <div style="margin-top:10px;">
@@ -475,10 +480,10 @@
 
         <div style="margin-top:10px;" class="note">
           <strong>Email backup:</strong><br />
-          If logging is unavailable, use “Copy Email Text” and email the same details to Titan.
+          If logging fails, use “Copy Email Text” and email the same details to Titan.
         </div>
 
-        <!-- Deployment info intentionally not shown (cosmetic change only) -->
+        <!-- Deployment info intentionally not shown -->
       </aside>
     </div>
   </main>
@@ -678,14 +683,14 @@
     }
 
     function validateMinimum(payload){
-      if(!payload.rep_name) return "Enter Rep Name.";
-      if(!payload.rep_email) return "Enter Rep Email.";
+      if(!payload.rep_name) return "Enter Rep name.";
+      if(!payload.rep_email) return "Enter Rep email.";
       if(!payload.channel) return "Select Channel.";
-      if(!payload.deposit_purpose) return "Select Deposit purpose.";
-      if(!payload.amount_aud) return "Enter Amount requested.";
+      if(!payload.deposit_purpose) return "Select Purpose.";
+      if(!payload.amount_aud) return "Enter Amount.";
       if(!payload.payee_name) return "Enter Payee name.";
-      if(payload.bank_details_verification_completed !== "Yes") return "Verification must be Yes before submission.";
-      if(!payload.summary_of_direction) return "Enter Summary of what was said to client.";
+      if(payload.bank_details_verification_completed !== "Yes") return "Verified must be Yes.";
+      if(!payload.summary_of_direction) return "Enter Summary.";
       return "";
     }
 
