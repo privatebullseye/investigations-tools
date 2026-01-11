@@ -443,8 +443,8 @@
 
         <div style="margin-top:10px;" class="note" id="deployMeta">
           <strong>Deployment:</strong><br />
-          <span class="small">Version 1 (10 Jan 2026)</span><br />
-          <span class="small">Deployment ID: <span class="mono" style="display:block;margin-top:8px;background:#0b1220;">AKfycbyTYYrdKx_PPE2g5vcA2kyC-WJRFgdnbDw5czMyqTlLEbWekLK-Z01Q389nVvpbFQvC</span></span>
+          <span class="small">Version 2 (11 Jan 2026, 12:15)</span><br />
+          <span class="small">Deployment ID: <span class="mono" style="display:block;margin-top:8px;background:#0b1220;">AKfycbyjUkarmo2k9SdFEd7_a-78jn_648ZVU9iaqVefdHDZ54xRRG2izCMl8HSrzmJnht_F</span></span>
         </div>
       </aside>
     </div>
@@ -453,14 +453,14 @@
   <script>
     const SHARED_PASSWORD = "titan";
 
-    // UPDATED: latest Apps Script Web App URL you last provided
+    // UPDATED: Version 2 web app endpoint
     const LOG_ENDPOINT =
-      "https://script.google.com/macros/s/AKfycbyTYYrdKx_PPE2g5vcA2kyC-WJRFgdnbDw5czMyqTlLEbWekLK-Z01Q389nVvpbFQvC/exec";
+      "https://script.google.com/macros/s/AKfycbyjUkarmo2k9SdFEd7_a-78jn_648ZVU9iaqVefdHDZ54xRRG2izCMl8HSrzmJnht_F/exec";
 
     // Optional: keep these in payload for audit traceability
-    const DEPLOYMENT_VERSION = "Version 1";
-    const DEPLOYMENT_DATE_TIME = "10 Jan 2026";
-    const DEPLOYMENT_ID = "AKfycbyTYYrdKx_PPE2g5vcA2kyC-WJRFgdnbDw5czMyqTlLEbWekLK-Z01Q389nVvpbFQvC";
+    const DEPLOYMENT_VERSION = "Version 2";
+    const DEPLOYMENT_DATE_TIME = "11 Jan 2026, 12:15";
+    const DEPLOYMENT_ID = "AKfycbyjUkarmo2k9SdFEd7_a-78jn_648ZVU9iaqVefdHDZ54xRRG2izCMl8HSrzmJnht_F";
 
     const lock = document.getElementById("lock");
     const pw = document.getElementById("pw");
@@ -630,15 +630,15 @@
         return { ok:false, message:"LOG_ENDPOINT not configured." };
       }
 
-      // GitHub Pages -> Apps Script: use no-cors for maximum compatibility
+      // GitHub Pages -> Apps Script: use text/plain + no-cors (most reliable)
       try{
         await fetch(LOG_ENDPOINT, {
           method: "POST",
           mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
         });
-        return { ok:true, message:"Submitted. Check the Google Sheet for a new row if you need confirmation." };
+        return { ok:true, message:"Submission sent. Check the Google Sheet for a new row if you need confirmation." };
       }catch(e){
         return { ok:false, message:"Endpoint call failed." };
       }
